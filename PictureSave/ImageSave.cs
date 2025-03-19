@@ -26,17 +26,16 @@ namespace IFS_line.PictureSave
         }
 
         private List<byte[]> AllWeavingEffects(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
-            List<decimal> eList,
-            int counts = (int)1e5, decimal x = 0, decimal y = 0)
+            List<(decimal e1, decimal e2)> eList, int counts = (int)1e5, decimal x = 0, decimal y = 0)
         {
             List<byte[]> effects = [];
             List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> changeTran = 
-                [..transformations.Zip(eList, (x, y) => (x.a, x.b, x.c, x.d, y, x.f, x.p))];
+                [..transformations.Zip(eList, (x, y) => (x.a, x.b, x.c, x.d, y.e1, x.f, x.p))];
 
             effects.Add(GetBlackJpegEncode(changeTran, counts, x, y));
             effects.Add(GetWhiteJpegEncode(transformations, counts, x, y));
 
-            changeTran = [.. changeTran.Select(_ => (_.a, _.b, _.c, _.d, (0 - _.e), _.f, _.p))];
+            changeTran = [..transformations.Zip(eList, (x, y) => (x.a, x.b, x.c, x.d, y.e2, x.f, x.p))];
             effects.Add(GetBlackJpegEncode(changeTran, counts, x, y));
 
             return effects;
@@ -48,7 +47,7 @@ namespace IFS_line.PictureSave
         {
             List<byte[]> effects = [];
             
-            for (int i = 0; i < 3 + 1; i++)
+            for (int i = 0; i < fixLine + 1; i++)
             {
                 List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> tranTemp = 
                                              [..transformations, ..tranCats.Skip(i).Take(fixLine)];
@@ -126,8 +125,7 @@ namespace IFS_line.PictureSave
         }
 
         public byte[] GetAllWeavingEffects(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
-            List<decimal> eList,
-        int counts = (int)1e5, decimal x = 0, decimal y = 0)
+            List<(decimal e1, decimal e2)> eList, int counts = (int)1e5, decimal x = 0, decimal y = 0)
         {
             var allEffects = AllWeavingEffects(transformations, eList, counts, x, y);
             return JpegMixToGif(allEffects);

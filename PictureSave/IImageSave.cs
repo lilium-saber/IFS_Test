@@ -18,8 +18,7 @@ namespace IFS_line.PictureSave
             int counts = (int)1e5, decimal x = 0, decimal y = 0, int pointNums = 200);
 
         byte[] GetAllWeavingEffects(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
-            List<decimal> eList,
-            int counts = (int)1e5, decimal x = 0, decimal y = 0);
+            List<(decimal e1, decimal e2)> eList, int counts = (int)1e5, decimal x = 0, decimal y = 0);
 
         byte[] GetPartWeavingEffects(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
             List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> tranCats,
