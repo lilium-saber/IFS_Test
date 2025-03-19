@@ -12,8 +12,6 @@ namespace IFS_line.PictureSave
 {
     public class ImageSave : IImageSave
     {
-        private static readonly int _bitmapLen = 600;
-
         private static byte[] JpegMixToGif(List<byte[]> jpegs)
         {
             List<Image<Rgba32>> images = [..jpegs.Select(_ => Image.Load<Rgba32>(_))];
@@ -64,19 +62,19 @@ namespace IFS_line.PictureSave
         public byte[] GetWhiteJpegEncode(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
             int counts = (int)1e5, decimal x = 0, decimal y = 0)
         {
-            var image = new Image<Rgba32>(_bitmapLen, _bitmapLen, new Rgba32(255, 255, 255, 256));
+            var image = new Image<Rgba32>(Ults.Ults.BitmapLen, Ults.Ults.BitmapLen, new Rgba32(255, 255, 255, 256));
             var points = PointCalculator.GetPointList(transformations, counts, x, y);
             var ms = new MemoryStream();
 
             if(counts != 0)
             {
                 var (minX, maxX, minY, maxY) = (points.Min(p => p.x), points.Max(p => p.x), points.Min(p => p.y), points.Max(p => p.y));
-                var (scaleX, scaleY) = (_bitmapLen / (maxX - minX), _bitmapLen / (maxY - minY));
+                var (scaleX, scaleY) = (Ults.Ults.BitmapLen / (maxX - minX), Ults.Ults.BitmapLen / (maxY - minY));
                 
                 points.ForEach(_ =>
                 {
                     var(x0, y0) = ((int)((_.x - minX) * scaleX), (int)((_.y - minY) * scaleY));
-                    if (x0 >= 0 && x0 < _bitmapLen && y0 >= 0 && y0 < _bitmapLen)
+                    if (x0 >= 0 && x0 < Ults.Ults.BitmapLen && y0 >= 0 && y0 < Ults.Ults.BitmapLen)
                     {
                         image[x0, y0] = new Rgba32(0, 0, 0, 256);
                     }
@@ -92,19 +90,19 @@ namespace IFS_line.PictureSave
         public byte[] GetBlackJpegEncode(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
             int counts = (int)1e5, decimal x = 0, decimal y = 0)
         {
-            var image = new Image<Rgba32>(_bitmapLen, _bitmapLen, new Rgba32(0, 0, 0, 0));
+            var image = new Image<Rgba32>(Ults.Ults.BitmapLen, Ults.Ults.BitmapLen, new Rgba32(0, 0, 0, 0));
             var points = PointCalculator.GetPointList(transformations, counts, x, y);
             var ms = new MemoryStream();
 
             if (counts != 0)
             {
                 var (minX, maxX, minY, maxY) = (points.Min(p => p.x), points.Max(p => p.x), points.Min(p => p.y), points.Max(p => p.y));
-                var (scaleX, scaleY) = (_bitmapLen / (maxX - minX), _bitmapLen / (maxY - minY));
+                var (scaleX, scaleY) = (Ults.Ults.BitmapLen / (maxX - minX), Ults.Ults.BitmapLen / (maxY - minY));
                 
                 points.ForEach(_ =>
                 {
                     var(x0, y0) = ((int)((_.x - minX) * scaleX), (int)((_.y - minY) * scaleY));
-                    if (x0 >= 0 && x0 < _bitmapLen && y0 >= 0 && y0 < _bitmapLen)
+                    if (x0 >= 0 && x0 < Ults.Ults.BitmapLen && y0 >= 0 && y0 < Ults.Ults.BitmapLen)
                     {
                         image[x0, y0] = new Rgba32(255, 255, 255, 256);
                     }
