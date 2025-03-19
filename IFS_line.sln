@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IFS_line", "IFS_line.csproj", "{111C5F77-EB71-4AF4-AA0E-FEEE7DC807CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{111C5F77-EB71-4AF4-AA0E-FEEE7DC807CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{111C5F77-EB71-4AF4-AA0E-FEEE7DC807CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{111C5F77-EB71-4AF4-AA0E-FEEE7DC807CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{111C5F77-EB71-4AF4-AA0E-FEEE7DC807CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

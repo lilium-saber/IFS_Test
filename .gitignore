@@ -1,0 +1,8 @@
+.idea/
+.vs/
+bin/
+obj/
+global.json
+IFS_line.sln.DotSettings.user
+.editorconfig
+.sln
