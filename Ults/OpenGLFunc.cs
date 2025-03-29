@@ -6,14 +6,72 @@ namespace AvaloniaApp.Ults;
 
 internal static class OpenGLFunc
 { 
-    private const string vertexCode = """
+    private const string vertexCode3 = """
+                                         #version 330 core
+                                         layout(location = 0) in vec3 aPosition;
+                                         out vec2 vColor;
+                                         void main()
+                                         {
+                                             gl_Position = vec4(aPosition, 1.0);
+                                         }
+                                       """;
+    private const string vertexCode5 = """
                                         #version 330 core
                                         layout(location = 0) in vec3 aPosition;
+                                        layout(location = 1) in vec2 aColor;
+                                        out vec2 vColor;
                                         void main()
                                         {
                                             gl_Position = vec4(aPosition, 1.0);
+                                            vColor = aColor;
                                         }
                                       """; // 着色器Shader, 创建顶点着色器
+    private const string vertexCode6 = """
+                                         #version 330 core
+                                         layout(location = 0) in vec3 aPosition;
+                                         layout(location = 1) in vec3 aColor;
+                                         out vec2 vColor;
+                                         void main()
+                                         {
+                                             gl_Position = vec4(aPosition, 1.0);
+                                             vColor = aColor;
+                                         }
+                                       """;
+    
+    internal static string ChangeColor0(float red, float green, float blue, float alpha)
+    {
+        return
+            $"#version 330 core\n" +
+            $"out vec4 out_color;\n" +
+            $"void main()\n" +
+            $"{{\n" +
+            $"out_color = vec4({red}, {green}, {blue}, {alpha});\n" +
+            $"}}";
+    }
+    
+    internal static string ChangeColor2(float blue, float alpha)
+    {
+        return
+            $"#version 330 core\n" +
+            $"in vec2 vColor;" +
+            $"out vec4 out_color;\n" +
+            $"void main()\n" +
+            $"{{\n" +
+            $"out_color = vec4(vColor.x, vColor.y, {blue}, {alpha});\n" +
+            $"}}";
+    }
+    
+    internal static string ChangeColor3(float alpha)
+    {
+        return
+            $"#version 330 core\n" +
+            $"in vec3 vColor;" +
+            $"out vec4 out_color;\n" +
+            $"void main()\n" +
+            $"{{\n" +
+            $"out_color = vec4(vColor.x, vColor.y, vColor.z, {alpha});\n" +
+            $"}}";
+    }
     
     // 创建着色器程序
     internal static void CreateShaderProgram(ref GL _gl, ref List<uint> program, ref uint vertexShader, 
@@ -46,15 +104,41 @@ internal static class OpenGLFunc
     }
     
     // 片段着色器
-    internal static void CreateVertexShader(ref GL _gl, ref uint shader)
+    internal static void CreateVertexShader5(ref GL _gl, ref uint shader)
     {
-        var vertexShader = _gl.CreateShader(ShaderType.VertexShader);
-        _gl.ShaderSource(vertexShader, vertexCode);
-        _gl.CompileShader(vertexShader);
-        _gl.GetShader(vertexShader, ShaderParameterName.CompileStatus, out var vtatus);
+        shader = _gl.CreateShader(ShaderType.VertexShader);
+        _gl.ShaderSource(shader, vertexCode5);
+        _gl.CompileShader(shader);
+        _gl.GetShader(shader, ShaderParameterName.CompileStatus, out var vtatus);
         if (vtatus != (int)GLEnum.True)
         {
-            var infoLog = _gl.GetShaderInfoLog(vertexShader);
+            var infoLog = _gl.GetShaderInfoLog(shader);
+            Console.WriteLine($"Vertex Shader Error: {infoLog}");
+        }
+    }
+    
+    internal static void CreateVertexShader3(ref GL _gl, ref uint shader)
+    {
+        shader = _gl.CreateShader(ShaderType.VertexShader);
+        _gl.ShaderSource(shader, vertexCode3);
+        _gl.CompileShader(shader);
+        _gl.GetShader(shader, ShaderParameterName.CompileStatus, out var vtatus);
+        if (vtatus != (int)GLEnum.True)
+        {
+            var infoLog = _gl.GetShaderInfoLog(shader);
+            Console.WriteLine($"Vertex Shader Error: {infoLog}");
+        }
+    }
+    
+    internal static void CreateVertexShader6(ref GL _gl, ref uint shader)
+    {
+        shader = _gl.CreateShader(ShaderType.VertexShader);
+        _gl.ShaderSource(shader, vertexCode6);
+        _gl.CompileShader(shader);
+        _gl.GetShader(shader, ShaderParameterName.CompileStatus, out var vtatus);
+        if (vtatus != (int)GLEnum.True)
+        {
+            var infoLog = _gl.GetShaderInfoLog(shader);
             Console.WriteLine($"Vertex Shader Error: {infoLog}");
         }
     }
@@ -75,14 +159,4 @@ internal static class OpenGLFunc
         }
     }
     
-    internal static string ChangeColor(float red, float green, float blue, float alpha)
-    {
-        return
-            $"#version 330 core\n" +
-            $"out vec4 out_color;\n" +
-            $"void main()\n" +
-            $"{{\n" +
-            $"out_color = vec4({red}, {green}, {blue}, {alpha});\n" +
-            $"}}";
-    }
 }
