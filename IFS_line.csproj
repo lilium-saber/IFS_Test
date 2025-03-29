@@ -12,7 +12,6 @@
       <PackageReference Include="OxyPlot.Core" Version="2.2.0" />
       <PackageReference Include="OxyPlot.SkiaSharp" Version="2.2.0" />
       <PackageReference Include="Silk.NET.Core" Version="2.22.0" />
-      <PackageReference Include="Silk.NET.Maths" Version="2.22.0" />
       <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.7" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.5" />

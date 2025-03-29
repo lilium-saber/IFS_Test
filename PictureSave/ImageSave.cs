@@ -33,7 +33,7 @@ namespace IFS_line.PictureSave
                 [..transformations.Zip(eList, (x, y) => (x.a, x.b, x.c, x.d, y.e1, x.f, x.p))];
 
             effects.Add(GetBlackJpegEncode(changeTran, counts, x, y));
-            effects.Add(GetWhiteJpegEncode(transformations, counts, x, y));
+            effects.Add(GetBlackJpegEncode(transformations, counts, x, y));
 
             changeTran = [..transformations.Zip(eList, (x, y) => (x.a, x.b, x.c, x.d, y.e2, x.f, x.p))];
             effects.Add(GetBlackJpegEncode(changeTran, counts, x, y));

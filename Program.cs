@@ -5,7 +5,7 @@ using IFS_line.Point;
 using SixLabors.ImageSharp;
 
 var targetF = AppDomain.CurrentDomain.BaseDirectory;
-var savePath = Path.Combine(targetF, "IFS_paper0.jpg");
+var savePath = Path.Combine(targetF, "IFS_paper0.gif");
 //var stream = File.Create(savePath);
 //var pngExporter = new PngExporter {Width = 600, Height = 400};
 //pngExporter.Export(model, stream);
@@ -41,7 +41,7 @@ List<(decimal e1, decimal e2)> eList2 =
 //    [.. transformation9, ..transformation9Chose3.Skip(0).Take(3)];
 
 IImageSave imageSave = new ImageSave();
-var pictureByte = imageSave.GetWhiteJpegEncode(transformation);
+var pictureByte = imageSave.GetAllWeavingEffects(transformation, eList2, (int)1e6);
 var picture = Image.Load(pictureByte);
 picture.Save(savePath);
 //var jpegQuality = new SixLabors.ImageSharp.Formats.Jpeg.JpegEncoder { Quality = 80 };
