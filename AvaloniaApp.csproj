@@ -6,6 +6,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,7 +21,8 @@
         </PackageReference>
         <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
         <PackageReference Include="Silk.NET.Core" Version="2.22.0" />
-        <PackageReference Include="Silk.NET.Maths" Version="2.22.0" />
+        <PackageReference Include="Silk.NET.Input" Version="2.22.0" />
         <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
+        <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
     </ItemGroup>
 </Project>
