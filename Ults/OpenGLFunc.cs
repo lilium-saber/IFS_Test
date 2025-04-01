@@ -72,14 +72,15 @@ internal static class OpenGLFunc
                                           #version 330 core
                                           layout(location = 0) in vec3 aPosition;
                                           layout(location = 1) in vec3 aColor;
+                                          layout(location = 2) in vec2 aTexCoord;
                                           out vec3 vColor;
-                                          uniform mat4 projection;
-                                          uniform mat4 view;
-                                          uniform mat4 model;
+                                          out vec2 TexCoord;
+                                          uniform mat4 transform;
                                           void main()
                                           {
-                                              gl_Position = projection * view * model * vec4(aPosition, 1.0);
+                                              gl_Position = transform * vec4(aPosition, 1.0);
                                               vColor = aColor;
+                                              TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
                                           }
                                           """;
     
@@ -87,9 +88,12 @@ internal static class OpenGLFunc
                                           #version 330 core
                                           out vec4 out_color;
                                           uniform vec4 ourColor;
+                                          uniform sampler2D ourTexture0;
+                                          in vec2 TexCoord;
                                           void main()
                                           {
                                               out_color = ourColor;
+                                              out_color = texture(ourTexture0, TexCoord);
                                           }
                                           """;
 
