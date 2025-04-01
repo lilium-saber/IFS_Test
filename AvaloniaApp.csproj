@@ -24,5 +24,18 @@
         <PackageReference Include="Silk.NET.Input" Version="2.22.0" />
         <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
         <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
+        <PackageReference Include="StbImageSharp" Version="2.30.15" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Picture\silk.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Picture\emoLa.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Picture\WoodBox.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>
