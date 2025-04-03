@@ -71,15 +71,14 @@ internal static class OpenGLFunc
     private const string vertexCodeTemp = """
                                           #version 330 core
                                           layout(location = 0) in vec3 aPosition;
-                                          layout(location = 1) in vec3 aColor;
-                                          layout(location = 2) in vec2 aTexCoord;
-                                          out vec3 vColor;
+                                          layout(location = 1) in vec2 aTexCoord;
                                           out vec2 TexCoord;
-                                          uniform mat4 transform;
+                                          uniform mat4 model;
+                                          uniform mat4 view;
+                                          uniform mat4 projection;
                                           void main()
                                           {
-                                              gl_Position = transform * vec4(aPosition, 1.0);
-                                              vColor = aColor;
+                                              gl_Position = projection * view * model * vec4(aPosition, 1.0);
                                               TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
                                           }
                                           """;
@@ -87,13 +86,12 @@ internal static class OpenGLFunc
     internal const string fragmentCodeTemp = """
                                           #version 330 core
                                           out vec4 out_color;
-                                          uniform vec4 ourColor;
                                           uniform sampler2D ourTexture0;
+                                          uniform sampler2D ourTexture1;
                                           in vec2 TexCoord;
                                           void main()
                                           {
-                                              out_color = ourColor;
-                                              out_color = texture(ourTexture0, TexCoord);
+                                              out_color = mix(texture(ourTexture0, TexCoord), texture(ourTexture1, TexCoord), 0.2);
                                           }
                                           """;
 
