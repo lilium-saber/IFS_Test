@@ -41,6 +41,32 @@ namespace IFS_line.Point
             }
             return points;
         }
+
+        public static List<(decimal x, decimal y, PointColorType type)> GetPointList(
+            List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p, PointColorType type)>
+                transformations,
+            int counts = (int)1e5, decimal x = 0, decimal y = 0, int bitmapLenght = 500)
+        {
+            List<(decimal x, decimal y, PointColorType t)> points = [];
+            for(int i = 0; i < counts; i++)
+            {
+                var temp = _random.Next(100) + 1; // [1, 100]
+                foreach (var (a, b, c, d, e, f, p, type) in transformations)
+                {
+                    if(temp <= (int)p)
+                    {
+                        var res = GetPointSet(bitmapLenght, a, b, c, d, e, f, ref x, ref y);
+                        points.Add((res.x0, res.y0, type));
+                        break;
+                    }
+                    else
+                    {
+                        temp -= (int)p;
+                    }
+                }
+            }
+            return points;
+        }
         
     }
 }

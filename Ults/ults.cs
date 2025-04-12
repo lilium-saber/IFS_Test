@@ -1,6 +1,6 @@
 ﻿namespace IFS_line.Ults;
 
-internal static class Ults
+public static class Ults
 {
-    internal static readonly int BitmapLen = 600;
+    public static readonly int BitmapLen = 512;
 }

@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace IFS_line.PictureSave
 {
     public interface IImageSave
     {
+        byte[] GetWhiteJpegEncodeRgba(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
+            List<PointColorType> colors,
+        int counts = (int)1e5, decimal x = 0, decimal y = 0);
+
+        byte[] GetWhitePngEncode(
+            List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
+            List<PointColorType> colors,
+            int counts = (int)1e5, decimal x = 0, decimal y = 0);
+        
         byte[] GetWhiteJpegEncode(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> transformations,
             int counts = (int)1e5, decimal x = 0, decimal y = 0);
 
