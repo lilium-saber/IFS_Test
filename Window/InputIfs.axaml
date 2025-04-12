@@ -1,0 +1,78 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:window="clr-namespace:AvaloniaApp.Window"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApp.Window.InputIfs"
+        x:DataType="window:InputIfs"
+        Title="InputIFS">
+    <Grid ColumnDefinitions="*,*">
+        <Border Grid.Column="0">
+            <TabControl Name="InputIfsTab" Margin="1" HorizontalAlignment="Center">
+                <TabItem Header="Customize">
+                    <Grid RowDefinitions="Auto, Auto,Auto,Auto">
+                        <!-- <Image Grid.Row="0" Source="../Picture/IfsX2d.png"></Image> -->
+                        <DataGrid Grid.Row="0" Name="IfsInputData" CanUserReorderColumns="False" ItemsSource="{Binding IfsDatas}"
+                                  CanUserResizeColumns="True" CanUserSortColumns="False" AutoGenerateColumns="False" MinWidth="100">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="a" Binding="{Binding a}" Width="*"/>
+                                <DataGridTextColumn Header="b" Binding="{Binding b}" Width="*"/>
+                                <DataGridTextColumn Header="c" Binding="{Binding c}" Width="*"/>
+                                <DataGridTextColumn Header="d" Binding="{Binding d}" Width="*"/>
+                                <DataGridTextColumn Header="e" Binding="{Binding e}" Width="*"/>
+                                <DataGridTextColumn Header="f" Binding="{Binding f}" Width="*"/>
+                                <DataGridTextColumn Header="p/%" Binding="{Binding p}" Width="*"/>
+                                <DataGridTemplateColumn Header="Color">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox ItemsSource="{Binding Colors}" SelectedItem="{Binding SelectedColor}" Width="100">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Border Width="16" Height="16" Background="{Binding}" Margin="0,0,5,0"/>
+                                                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                            <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the number of rows: </TextBlock>
+                            <Button Name="AddInputIfsRowButton" Background="Transparent" BorderBrush="Transparent" 
+                                    Click="InputAddRowClick">➕</Button>
+                            <Button Name="DeleteInputIfsRowButton" Background="Transparent" BorderBrush="Transparent"
+                                    Click="InputDeleteRowClick">➖</Button>
+                        </StackPanel>
+                        <Button Grid.Row="2" Name="InputIfsImageSaveButton" Click="GetJpgImageClick" HorizontalAlignment="Center">CreateImage</Button>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Presets">
+                    <Grid RowDefinitions="Auto, Auto">
+                        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                            <Button Name="PresetsTree0Button" Click="GetIfsTree0PresetsClick">Tree1</Button>
+                            <Button Name="PresetsTree1Button" Click="GetIfsTree1PresetsClick">Tree2</Button>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                            <Button Name="PresetsFern0Button" Click="GetIfsFern0PresetsClick">Fern0</Button>
+                            <Button Name="PresetsLeaf0Button" Click="GetIfsLeaf0PresetsClick">Leaf0</Button>
+                        </StackPanel>
+                    </Grid>
+                </TabItem>
+            </TabControl>
+        </Border>
+        <Border Grid.Column="1">
+            <Grid RowDefinitions="*, Auto">
+                <Image Grid.Row="0" Name="InputImageShow" Stretch="Fill"></Image>
+                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                    <Button Name="InputSaveImageButton" Click="InputSaveImageClick"></Button>
+                    <Button Name="InputImage2OpenGlButton" Click="InputImage2OpenGlClick"></Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

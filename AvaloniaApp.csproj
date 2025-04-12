@@ -10,7 +10,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Avalonia" Version="11.2.1"/>
+        <PackageReference Include="Avalonia" Version="11.2.6" />
+        <PackageReference Include="Avalonia.Controls.DataGrid" Version="11.2.6" />
+        <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="11.1.1" />
         <PackageReference Include="Avalonia.Desktop" Version="11.2.1"/>
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.1"/>
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.2.1"/>
@@ -19,6 +21,7 @@
             <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="MathJax" Version="2.7.0" />
         <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
         <PackageReference Include="Silk.NET.Core" Version="2.22.0" />
         <PackageReference Include="Silk.NET.Input" Version="2.22.0" />
@@ -37,5 +40,20 @@
       <None Update="Picture\WoodBox.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="IFS2D\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IFS_line\IFS_line.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Picture\IfsX2d.png" />
+      <AvaloniaResource Include="Picture\IfsX2d.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AvaloniaResource>
     </ItemGroup>
 </Project>

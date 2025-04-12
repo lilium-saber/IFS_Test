@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using System.Threading;
@@ -8,12 +9,15 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AvaloniaApp.Mold;
 using AvaloniaApp.OpenGLUse;
+using AvaloniaApp.Ults;
 using AvaloniaApp.Window;
+using IFS_line.PictureSave;
 using MathNet.Numerics.LinearAlgebra;
 using Vector = MathNet.Numerics.LinearAlgebra.Vector<float>;
 
 namespace AvaloniaApp;
 
+[SuppressMessage("Performance", "CA1859:尽可能使用具体类型以提高性能")]
 public partial class MainWindow : Avalonia.Controls.Window
 {
     public MainWindow()
@@ -37,10 +41,27 @@ public partial class MainWindow : Avalonia.Controls.Window
             [];
         var start = Vector.Build.DenseOfArray([0.0f, 0.0f, 0.0f]);
         var points = MoldCalculator.GetMatrixListRes(tran, start, 50);
-        Thread.Sleep(2000);
+        // Thread.Sleep(2000);
         var silk = new SILKOpenGLOnly(points);
         silk.PubStartOpenGl();
         // var showMold = new Test(points);
         // await showMold.ShowDialog(this).ConfigureAwait(true);
+    }
+    
+    private void IfsImageClick(object sender, RoutedEventArgs e)
+    {
+        var showIfs = new ShowIFSx2d();
+        IImageSave imageSave = new ImageSave();
+        var transformation = TransformationCode.TransformationTree0;
+        var pictureByte = imageSave.GetWhiteJpegEncode(transformation);
+        showIfs.SetImage(pictureByte);
+
+        showIfs.ShowDialog(this).ConfigureAwait(true);
+    }
+
+    private void OpenInputIfsClick(object sender, RoutedEventArgs e)
+    {
+        var inputIfs = new InputIfs();
+        inputIfs.ShowDialog(this).ConfigureAwait(true);
     }
 }

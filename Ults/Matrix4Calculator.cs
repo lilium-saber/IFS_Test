@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace AvaloniaApp.Ults;
 
-internal class Matrix4Calculator
+internal static class Matrix4Calculator
 {
     internal static Matrix4x4 GetStandardMatrixX4() =>
         new Matrix4x4(

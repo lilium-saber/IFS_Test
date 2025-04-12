@@ -82,22 +82,44 @@ internal static class OpenGLFunc
                                               TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
                                           }
                                           """;
+        // """
+        //                                   #version 330 core
+        //                                   layout(location = 0) in vec3 aPosition;
+        //                                   layout(location = 1) in vec2 aTexCoord;
+        //                                   out vec2 TexCoord;
+        //                                   uniform mat4 model;
+        //                                   uniform mat4 view;
+        //                                   uniform mat4 projection;
+        //                                   void main()
+        //                                   {
+        //                                       gl_Position = projection * view * model * vec4(aPosition, 1.0);
+        //                                       TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
+        //                                   }
+        //                                   """;
     
     internal const string fragmentCodeTemp = """
-                                          #version 330 core
-                                          out vec4 out_color;
-                                          uniform sampler2D ourTexture0;
-                                          uniform sampler2D ourTexture1;
-                                          in vec2 TexCoord;
-                                          void main()
-                                          {
-                                              out_color = mix(texture(ourTexture0, TexCoord), texture(ourTexture1, TexCoord), 0.2);
-                                          }
-                                          """;
+                                             #version 330 core
+                                             out vec4 out_color;
+                                             uniform sampler2D ourTexture0;
+                                             in vec2 TexCoord;
+                                             void main()
+                                             {
+                                                 out_color = texture(ourTexture0, TexCoord);
+                                             }
+                                             """;
+        // """
+        //                                   #version 330 core
+        //                                   out vec4 out_color;
+        //                                   uniform sampler2D ourTexture0;
+        //                                   uniform sampler2D ourTexture1;
+        //                                   in vec2 TexCoord;
+        //                                   void main()
+        //                                   {
+        //                                       out_color = mix(texture(ourTexture0, TexCoord), texture(ourTexture1, TexCoord), 0.2);
+        //                                   }
+        //                                   """;
 
-    internal static string ChangeColorUniform()
-    {
-        return 
+    internal static string ChangeColorUniform() =>
             $"#version 330 core\n" +
             $"out vec4 out_color;\n" +
             $"uniform vec4 ourColor;\n" +
@@ -105,11 +127,8 @@ internal static class OpenGLFunc
             $"{{" +
             $"out_color = ourColor;" +
             $"}}";
-    }
 
-    internal static string ChangeCoordTex2()
-    {
-        return 
+    internal static string ChangeCoordTex2() =>
             $"#version 330 core\n" +
             $"out vec4 out_color;\n" +
             $"in vec3 vColor;\n" +
@@ -122,11 +141,8 @@ internal static class OpenGLFunc
             $"vec4 color2 = texture(ourTexture0, TexCoord);\n" +
             $"out_color = mix(color1, color2, 0.5);\n" +
             $"}}";
-    }
     
-    internal static string ChangeCoordTexUniform()
-    {
-        return 
+    internal static string ChangeCoordTexUniform() =>
             $"#version 330 core\n" +
             $"out vec4 out_color;\n" +
             $"in vec3 vColor;\n" +
@@ -137,22 +153,16 @@ internal static class OpenGLFunc
             $"{{\n" +
             $"out_color = texture(ourTexture, TexCoord) * ourColor;" +
             $"}}";
-    }
     
-    internal static string ChangeColor(float red, float green, float blue, float alpha)
-    {
-        return
+    internal static string ChangeColor(float red, float green, float blue, float alpha) =>
             $"#version 330 core\n" +
             $"out vec4 out_color;\n" +
             $"void main()\n" +
             $"{{\n" +
             $"out_color = vec4({red}, {green}, {blue}, {alpha});\n" +
             $"}}";
-    }
     
-    internal static string ChangeColor(float blue, float alpha)
-    {
-        return
+    internal static string ChangeColor(float blue, float alpha) =>
             $"#version 330 core\n" +
             $"in vec2 vColor;" +
             $"out vec4 out_color;\n" +
@@ -160,11 +170,8 @@ internal static class OpenGLFunc
             $"{{\n" +
             $"out_color = vec4(vColor.x, vColor.y, {blue}, {alpha});\n" +
             $"}}";
-    }
     
-    internal static string ChangeColor(float alpha)
-    {
-        return
+    internal static string ChangeColor(float alpha) =>
             $"#version 330 core\n" +
             $"in vec3 vColor;" +
             $"out vec4 out_color;\n" +
@@ -172,7 +179,6 @@ internal static class OpenGLFunc
             $"{{\n" +
             $"out_color = vec4(vColor.x, vColor.y, vColor.z, {alpha});\n" +
             $"}}";
-    }
     
     // 创建着色器程序
     internal static void CreateShaderProgram(ref GL _gl, ref List<uint> program, ref uint vertexShader, 

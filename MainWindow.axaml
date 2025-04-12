@@ -6,8 +6,14 @@
         x:Class="AvaloniaApp.MainWindow"
         Title="MainWindow">
     <StackPanel>
-        <Button Click="OpenShowWindowClick" Name="OpenShowOpenGL">
-            <TextBlock Name="OpenGLText">OpenGLWindow</TextBlock>
+        <Button Click="OpenShowWindowClick" Name="OpenShowOpenGlButton">
+            <TextBlock Name="OpenGlText">OpenGLWindow</TextBlock>
+        </Button>
+        <Button Click="IfsImageClick" Name="ShowIfsImageButton">
+            <TextBlock Name="ShowImageText">ShowDefaultImage</TextBlock>
+        </Button>
+        <Button Click="OpenInputIfsClick" Name="InputIfsButton">
+            <TextBlock Name="InputIfsText">InputIFS</TextBlock>
         </Button>
     </StackPanel>
 </Window>
