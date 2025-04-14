@@ -2,5 +2,5 @@
 
 public static class Ults
 {
-    public static readonly int BitmapLen = 512;
+    public const int BitmapLen = 512;
 }
