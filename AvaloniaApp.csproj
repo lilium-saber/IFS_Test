@@ -34,9 +34,6 @@
       <None Update="Picture\silk.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
-      <None Update="Picture\emoLa.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
       <None Update="Picture\WoodBox.jpg">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
@@ -53,6 +50,10 @@
     <ItemGroup>
       <None Remove="Picture\IfsX2d.png" />
       <AvaloniaResource Include="Picture\IfsX2d.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AvaloniaResource>
+      <None Remove="Picture\emoLa.png" />
+      <AvaloniaResource Include="Picture\emoLa.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AvaloniaResource>
     </ItemGroup>

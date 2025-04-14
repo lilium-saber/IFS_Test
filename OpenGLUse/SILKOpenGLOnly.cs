@@ -22,6 +22,7 @@ public class SILKOpenGLOnly
     private GL? _gl;
     private IWindow? _window;
     private readonly Camera _camera;
+    private readonly LightObject _sunLight;
     private uint _vao; // 顶点数组对象
     private uint _vbo; // 顶点缓冲对象 
     private uint _ebo; // 索引缓冲对象
@@ -60,7 +61,7 @@ public class SILKOpenGLOnly
     private void KeyDown(IKeyboard keyboard, Key key, int code)
     {
         Console.WriteLine($"input key: {key}");
-        _camera.cameraSpeed = 20.0f * deltaTime;
+        _camera.CameraSpeed = 20.0f * deltaTime;
         
         switch (key)
         {
@@ -68,47 +69,47 @@ public class SILKOpenGLOnly
                 useMouse = !useMouse;
                 if(useMouse)
                 {
-                    _camera.cameraPos = savePos;
-                    _camera.cameraFront = saveFront;
+                    _camera.CameraPos = savePos;
+                    _camera.CameraFront = saveFront;
                     yaw = saveYaw;
                     pitch = savePitch;
                 }
                 else
                 {
-                    savePos = _camera.cameraPos;
-                    saveFront = _camera.cameraFront;
+                    savePos = _camera.CameraPos;
+                    saveFront = _camera.CameraFront;
                     saveYaw = yaw;
                     savePitch = pitch;
                 }
                 break;
             case Key.L:
-                _camera.cameraSpeed += 10.0f;
-                Console.WriteLine($"camera speed: {_camera.cameraSpeed}");
+                _camera.CameraSpeed += 10.0f;
+                Console.WriteLine($"camera speed: {_camera.CameraSpeed}");
                 break;
             case Key.K:
-                _camera.cameraSpeed -= 10.0f;
-                Console.WriteLine($"camera speed: {_camera.cameraSpeed}");
+                _camera.CameraSpeed -= 10.0f;
+                Console.WriteLine($"camera speed: {_camera.CameraSpeed}");
                 break;
             case Key.T:
                 useTime = !useTime;
                 break;
             case Key.W:
-                _camera.cameraPos += _camera.cameraSpeed * 1.5f * _camera.cameraFront;
+                _camera.CameraPos += _camera.CameraSpeed * 1.5f * _camera.CameraFront;
                 break;
             case Key.S:
-                _camera.cameraPos -= _camera.cameraSpeed * 1.5f * _camera.cameraFront;
+                _camera.CameraPos -= _camera.CameraSpeed * 1.5f * _camera.CameraFront;
                 break;
             case Key.A:
-                _camera.cameraPos -= Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.cameraFront.X, 0.0f, _camera.cameraFront.Z)), _camera.cameraUp)) * _camera.cameraSpeed / 2;
+                _camera.CameraPos -= Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.CameraFront.X, 0.0f, _camera.CameraFront.Z)), _camera.CameraUp)) * _camera.CameraSpeed / 2;
                 break;
             case Key.D:
-                _camera.cameraPos += Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.cameraFront.X, 0.0f, _camera.cameraFront.Z)), _camera.cameraUp)) * _camera.cameraSpeed / 2;
+                _camera.CameraPos += Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.CameraFront.X, 0.0f, _camera.CameraFront.Z)), _camera.CameraUp)) * _camera.CameraSpeed / 2;
                 break;
             case Key.Space:
-                _camera.cameraPos += _camera.cameraSpeed * _camera.cameraUp;
+                _camera.CameraPos += _camera.CameraSpeed * _camera.CameraUp;
                 break;
             case Key.ControlLeft:
-                _camera.cameraPos -= _camera.cameraSpeed * _camera.cameraUp;
+                _camera.CameraPos -= _camera.CameraSpeed * _camera.CameraUp;
                 break;
             case Key.Escape:
                 Console.WriteLine("close window.\nopenGL window close.");
@@ -118,7 +119,7 @@ public class SILKOpenGLOnly
                 Console.WriteLine($"Key {key} not handled.");
                 break;
         }
-        Console.WriteLine($"pos is {_camera.cameraPos}");
+        Console.WriteLine($"pos is {_camera.CameraPos}");
     }
 
     private void OnMouseMove(IMouse mouse, Vector2 position)
@@ -148,47 +149,45 @@ public class SILKOpenGLOnly
             Z = MathF.Sin(Matrix4Calculator.GetRadians(yaw)) * MathF.Cos(Matrix4Calculator.GetRadians(pitch))
         };
         Console.WriteLine($"yaw {yaw}, pitch {pitch}");
-        _camera.cameraFront = Vector3.Normalize(front);
+        _camera.CameraFront = Vector3.Normalize(front);
     }
 
     private void OnMouseScroll(IMouse mouse, ScrollWheel scroll)
     {
-        if (_camera.fov is >= 1.0f and <= 45.0f)
-            _camera.fov -= scroll.Y;
-        if (_camera.fov <= 1.0f)
-            _camera.fov = 1.0f;
-        if (_camera.fov >= 45.0f)
-            _camera.fov = 45.0f;
+        if (_camera.Fov is >= 1.0f and <= 45.0f)
+            _camera.Fov -= scroll.Y;
+        if (_camera.Fov <= 1.0f)
+            _camera.Fov = 1.0f;
+        if (_camera.Fov >= 45.0f)
+            _camera.Fov = 45.0f;
     }
         
     private unsafe void OnRender(double temp)
     {
         _gl!.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        _gl.BindVertexArray(_vao);
         
-        // 绑定EBO
-        _gl.UseProgram(_program[0]);
-        // var timeValue = (float) _window.Time;
-        // var greenValue = (MathF.Sin(timeValue) / 2.0f) + 0.5f;
-        // var blueValue = (MathF.Sin(timeValue) / 2.0f) + 0.2f;
-        // var vertexColorLocation = _gl.GetUniformLocation(_program[0], "ourColor");
-        // _gl.Uniform4(vertexColorLocation, 0, greenValue, blueValue, 1.0f);
         
         var nowTime = (float)_window!.Time;
         deltaTime = nowTime - lastTime;
         lastTime = nowTime;
-       
-        var view = _camera.viewMatrix;
+        var view = _camera.ViewMatrix;
         var axis = new Vector3(0.5f, 1.0f, 0);
         var model = Matrix4x4.Identity;
         model = Matrix4x4.CreateFromAxisAngle(axis, 50.0f) * model;
         // var view = Matrix4x4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        var proj = Matrix4Calculator.CreatePerspective(Matrix4Calculator.GetRadians(_camera.fov), (float)_window.Size.X / _window.Size.Y, 0.1f, 100.0f);
-        var modelLoc = _gl.GetUniformLocation(_program[0], "model");
+        var proj = Matrix4Calculator.CreatePerspective(Matrix4Calculator.GetRadians(_camera.Fov), (float)_window.Size.X / _window.Size.Y, 0.1f, 100.0f);
+        
+        _sunLight.RenderLight(ref _gl, view, proj);
+        
+        // 绑定EBO
+        _gl.UseProgram(_program[^1]);
+        _gl.BindVertexArray(_vao);
+        
+        var modelLoc = _gl.GetUniformLocation(_program[^1], "model");
         _gl.UniformMatrix4(modelLoc, 1, false, (float*)&model);
-        var viewLoc = _gl.GetUniformLocation(_program[0], "view");
+        var viewLoc = _gl.GetUniformLocation(_program[^1], "view");
         _gl.UniformMatrix4(viewLoc, 1, false, (float*)&view);
-        var projLoc = _gl.GetUniformLocation(_program[0], "projection");
+        var projLoc = _gl.GetUniformLocation(_program[^1], "projection");
         _gl.UniformMatrix4(projLoc, 1, false, (float*)&proj);
 
         // var trans = Matrix4x4.CreateTranslation(0.5f, -0.5f, 0);
@@ -197,9 +196,17 @@ public class SILKOpenGLOnly
         // var transLoc = _gl.GetUniformLocation(_program[0], "transform");
         // _gl.UniformMatrix4(transLoc, 1, false, (float*)&trans);
         
+        
         _gl.ActiveTexture(TextureUnit.Texture0);
         _gl.BindTexture(TextureTarget.Texture2D, _textures[0]);
         _gl.Uniform1(_gl.GetUniformLocation(_program[0], "ourTexture0"), 0);
+        
+        const float radius = 5.0f;
+        // _sunLight.LightPosition = new(radius * MathF.Cos(nowTime), 2.0f, radius * MathF.Sin(nowTime));
+        _gl.Uniform3(_gl.GetUniformLocation(_program[^1], "lightColor"), 1.0f, 1.0f, 1.0f);
+        _gl.Uniform3(_gl.GetUniformLocation(_program[^1], "objectColor"), 1.0f, 0.5f, 0.31f);
+        _gl.Uniform3(_gl.GetUniformLocation(_program[^1], "lightPos"), _sunLight.LightPosition.X, _sunLight.LightPosition.Y, _sunLight.LightPosition.Z);
+        _gl.Uniform3(_gl.GetUniformLocation(_program[^1], "viewPos"), _camera.CameraPos.X, _camera.CameraPos.Y, _camera.CameraPos.Z);
         // _gl.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (void*) 0);
         
         // var trans2 = Matrix4x4.CreateTranslation(-0.5f, 0.5f, 0);
@@ -213,6 +220,7 @@ public class SILKOpenGLOnly
         // count是需要绘制的顶点个数, 6是索引个数
         // _gl.DrawElements(PrimitiveType.Triangles, 6, DrawElementsType.UnsignedInt, (void*) 0);
         _gl.DrawArrays(PrimitiveType.Triangles, 0, 12); // 不需要ebo, 需要顶点数组顺序确定
+        
     }
 
     private unsafe void OnLoad()
@@ -238,30 +246,34 @@ public class SILKOpenGLOnly
         // 创建OpenGL上下文绑定到窗口。 如果离屏渲染如avalonia控件使用GetApi()方法
         _gl = _window.CreateOpenGL();
         
-        _gl.ClearColor(Color.LightSkyBlue);
+        // _gl.ClearColor(Color.LightSkyBlue);
         _gl.Enable(EnableCap.DepthTest);
         
+        // 其他物体的代码
+        _sunLight.LoadLight(ref _gl); // 光照物体
+
+        // 目标物体的代码
         // 开始渲染
         // 顶点缓冲区
         _vao = _gl.GenVertexArray();
         _gl.BindVertexArray(_vao);
-        // 前3个是x,y,z坐标, 后3个是颜色, 最后2个是纹理坐标
+        // 根据Vertex着色器决定
         float[] vertices =
         [
-            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
-            0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
-            0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-            0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
-            -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,
-            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.0f,  1.0f, 0.0f,  1.0f, 0.0f, 1.0f,
+            0.5f,  0.5f, 0.0f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            0.5f,  0.5f, 0.0f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            -0.5f,  0.5f, 0.0f,  0.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
 
             // 第二个面
-            0.0f, -0.5f, -0.5f,  0.0f, 0.0f,
-            0.0f,  0.5f, -0.5f,  1.0f, 0.0f,
-            0.0f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.0f,  0.5f,  0.5f,  1.0f, 1.0f,
-            0.0f, -0.5f,  0.5f,  0.0f, 1.0f,
-            0.0f, -0.5f, -0.5f,  0.0f, 0.0f
+            0.0f, -0.5f, -0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
+            0.0f,  0.5f, -0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 1.0f,
+            0.0f,  0.5f,  0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            0.0f,  0.5f,  0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            0.0f, -0.5f,  0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            0.0f, -0.5f, -0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f
         ];
         _vbo = _gl.GenBuffer();
         _gl.BindBuffer(BufferTargetARB.ArrayBuffer, _vbo); //ArrayBuffer: 顶点缓冲区目标, ElementArrayBuffer: 数组缓冲区目标, UniformBuffer: 统一缓冲区目标
@@ -290,21 +302,25 @@ public class SILKOpenGLOnly
         OpenGLFunc.CreateFragmentShader(ref _gl, ref _fragmentShader, fragmentCode);
         
         // 创建着色器程序
-        OpenGLFunc.CreateShaderProgram(ref _gl, ref _program, ref vertexShader, ref _fragmentShader, 0);
+        OpenGLFunc.CreateShaderProgram(ref _gl, ref _program, ref vertexShader, ref _fragmentShader);
         
         // 删除着色器
-        OpenGLFunc.DeleteShader(ref _gl, ref _program, ref _fragmentShader, ref vertexShader);
+        OpenGLFunc.DeleteShader(ref _gl, ref _program, ref _fragmentShader, ref vertexShader, 0);
         
         // 绑定顶点属性, size对应vertexShader中一个点的坐标数, stride是每个顶点的字节数长度
         const uint positionLoc = 0;
         _gl.EnableVertexAttribArray(positionLoc);
-        _gl.VertexAttribPointer(positionLoc, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), (void*) 0);
+        _gl.VertexAttribPointer(positionLoc, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*) 0);
         // const uint colorLoc = 1;
         // _gl.EnableVertexAttribArray(colorLoc);
         // _gl.VertexAttribPointer(colorLoc, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*) (3 * sizeof(float)));
         const uint texCoordLoc = 1;
         _gl.EnableVertexAttribArray(texCoordLoc);
-        _gl.VertexAttribPointer(texCoordLoc, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), (void*) (3 * sizeof(float)));
+        _gl.VertexAttribPointer(texCoordLoc, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*) (3 * sizeof(float)));
+        
+        const uint normalLoc = 2;
+        _gl.EnableVertexAttribArray(normalLoc);
+        _gl.VertexAttribPointer(normalLoc, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*) (5 * sizeof(float)));
 
         if (_pictures is not [])
         {
@@ -412,17 +428,29 @@ public class SILKOpenGLOnly
             _input!.Dispose();
             _gl.DeleteVertexArray(_vao);
             _gl.DeleteBuffer(_vbo);
-            if (_program.Count > 0)
+            foreach(var vao in _vaos)
             {
-                _gl.DeleteProgram(_program[0]);
+                _gl.DeleteVertexArray(vao);
             }
-            if (_fragmentShader.Count > 0)
+            foreach(var vbo in _vbos)
             {
-                _gl.DeleteShader(_fragmentShader[0]);
+                _gl.DeleteBuffer(vbo);
             }
-            if (_textures.Count > 0)
+            foreach(var ebo in _ebos)
             {
-                _gl.DeleteTexture(_textures[0]);
+                _gl.DeleteBuffer(ebo);
+            }
+            foreach(var program in _program)
+            {
+                _gl.DeleteProgram(program);
+            }
+            foreach(var fragmentShader in _fragmentShader)
+            {
+                _gl.DeleteShader(fragmentShader);
+            }
+            foreach(var texture in _textures)
+            {
+                _gl.DeleteTexture(texture);
             }
             _gl.Dispose();
             Console.WriteLine("OpenGL resources disposed.");
@@ -437,10 +465,10 @@ public class SILKOpenGLOnly
         Console.WriteLine("Window reference cleared.");
     }
     
-    private unsafe void OnUpdate(double delta)
-    {
-        
-    }
+    // private unsafe void OnUpdate(double delta)
+    // {
+    //     
+    // }
     
     // 状态机
     private void StartOpenGl()
@@ -452,7 +480,7 @@ public class SILKOpenGLOnly
         _window = Silk.NET.Windowing.Window.Create(options);
 
         _window.Load += OnLoad;
-        _window.Update += OnUpdate;
+        // _window.Update += OnUpdate;
         _window.Render += OnRender;
         _window.Closing += OnClose;
         _window.Run();
@@ -461,6 +489,7 @@ public class SILKOpenGLOnly
     public SILKOpenGLOnly()
     {
         _camera = new();
+        _sunLight = new();
         _vaos = [];
         _vbos = [];
         _ebos = [];
@@ -476,6 +505,7 @@ public class SILKOpenGLOnly
     {
         _points = points;
         _camera = new();
+        _sunLight = new();
         _vaos = [];
         _vbos = [];
         _ebos = [];
@@ -489,6 +519,7 @@ public class SILKOpenGLOnly
     {
         _pictures = pictures;
         _camera = new();
+        _sunLight = new();
         _points = [];
         _vaos = [];
         _vbos = [];
