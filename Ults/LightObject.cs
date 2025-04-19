@@ -5,12 +5,13 @@ namespace AvaloniaApp.Ults;
 
 internal class LightObject
 {
-    internal uint LightVao { get; set; }
-    internal uint LightVbo { get; set; }
-    internal uint LightProgram { get; set; }
-    internal uint LightFragmentShader { get; set; }
-    internal Matrix4x4 LightModel { get; set; } = Matrix4x4.Identity;
+    private uint LightVao { get; set; }
+    private uint LightVbo { get; set; }
+    private uint LightProgram { get; set; }
+    private uint LightFragmentShader { get; set; }
+    private Matrix4x4 LightModel { get; set; } = Matrix4x4.Identity;
     internal Vector3 LightPosition { get; set; } = new(0.0f, 2.0f, 0.0f);
+    internal Vector3 LightColor { get; set; } = new(1.0f, 1.0f, 1.0f);
 
     private const string LightFragmentCode = """
                                               #version 330 core

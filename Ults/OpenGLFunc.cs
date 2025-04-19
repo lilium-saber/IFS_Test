@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using Silk.NET.OpenGL;
+using StbImageSharp;
 
 namespace AvaloniaApp.Ults;
 
@@ -307,6 +309,29 @@ internal static class OpenGLFunc
         gl.DetachShader(program[index], fragmentShader[index]);
         gl.DeleteShader(vertexShader);
         gl.DeleteShader(fragmentShader[index]);
+    }
+
+    internal static unsafe void LoadTexture(byte[] imageData, ref GL gl, ref uint texture)
+    {
+        if(imageData.Length == 0)
+        {
+            Console.WriteLine("Texture file not found");
+            return;
+        }
+        using var imageStream = new MemoryStream(imageData);
+        var image = ImageResult.FromStream(imageStream, ColorComponents.RedGreenBlueAlpha);
+        texture = gl.GenTexture();
+        gl.BindTexture(TextureTarget.Texture2D, texture);
+        gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)TextureWrapMode.Repeat);
+        gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)TextureWrapMode.Repeat);
+        gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)TextureMinFilter.Linear);
+        gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)TextureMagFilter.Linear);
+        fixed (byte* data = image.Data)
+        {
+            gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba,
+                IFS_line.Ults.Ults.BitmapLen, IFS_line.Ults.Ults.BitmapLen, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
+        }
+        gl.GenerateMipmap(TextureTarget.Texture2D);
     }
     
 }

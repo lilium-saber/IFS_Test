@@ -177,6 +177,13 @@ public partial class InputIfs : Avalonia.Controls.Window
         IfsDatas!.Add(new());
     }
     
+    private void InputClearRowClick(object sender, RoutedEventArgs e)
+    {
+        Console.WriteLine($"InputClearRowClick{IfsDatas?.Count}");
+        IfsDatas!.Clear();
+        IfsDatas.Add(new());
+    }
+    
     private void InputDeleteRowClick(object sender, RoutedEventArgs e)
     {
         if(IfsDatas.Count > 1)

@@ -42,11 +42,21 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-                            <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the number of rows: </TextBlock>
+                            <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the rows: </TextBlock>
                             <Button Name="AddInputIfsRowButton" Background="Transparent" BorderBrush="Transparent" 
                                     Click="InputAddRowClick">➕</Button>
                             <Button Name="DeleteInputIfsRowButton" Background="Transparent" BorderBrush="Transparent"
                                     Click="InputDeleteRowClick">➖</Button>
+                            <Button Name="InputClearRows" Content="Clear" Click="InputClearRowClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="OrangeRed" Opacity="0.2"></SolidColorBrush>
+                                </Button.Background>
+                                <Button.Styles>
+                                    <Style Selector="Button">
+                                        <Setter Property="CornerRadius" Value="90"/>
+                                    </Style>
+                                </Button.Styles>
+                            </Button>
                         </StackPanel>
                         <Button Grid.Row="2" Name="InputIfsImageSaveButton" Click="GetJpgImageClick" HorizontalAlignment="Center">CreateImage</Button>
                     </Grid>
@@ -54,12 +64,28 @@
                 <TabItem Header="Presets">
                     <Grid RowDefinitions="Auto, Auto">
                         <StackPanel Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-                            <Button Name="PresetsTree0Button" Click="GetIfsTree0PresetsClick">Tree1</Button>
-                            <Button Name="PresetsTree1Button" Click="GetIfsTree1PresetsClick">Tree2</Button>
+                            <Button Name="PresetsTree0Button" Content="Tree1" Click="GetIfsTree0PresetsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Name="PresetsTree1Button" Content="Tree2" Click="GetIfsTree1PresetsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                </Button.Background>
+                            </Button>
                         </StackPanel>
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-                            <Button Name="PresetsFern0Button" Click="GetIfsFern0PresetsClick">Fern0</Button>
-                            <Button Name="PresetsLeaf0Button" Click="GetIfsLeaf0PresetsClick">Leaf0</Button>
+                            <Button Name="PresetsFern0Button" Content="Pear0" Click="GetIfsFern0PresetsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Name="PresetsLeaf0Button" Content="Leaf0" Click="GetIfsLeaf0PresetsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                </Button.Background>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </TabItem>

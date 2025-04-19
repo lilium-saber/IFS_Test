@@ -11,6 +11,7 @@ public class Camera
     public Vector3 CameraUp { get; set; } = new Vector3(0.0f, 1.0f, 0.0f);
     public float Fov { get; set; } = 45.0f; // 视场角
     public float CameraSpeed { get; set; } = 0.05f;
+    public float Sensitivity { get; set; } = 0.005f; // 鼠标灵敏度
     
     public void CameraReset()
     {
