@@ -81,7 +81,12 @@
                                     <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
                                 </Button.Background>
                             </Button>
-                            <Button Name="PresetsLeaf0Button" Content="Leaf0" Click="GetIfsLeaf0PresetsClick">
+                            <Button Name="PresetsLeaf0Button" Content="Leaf0" Click="GetIfsMapleLeaf0PresetsClick">
+                                <Button.Background>
+                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                </Button.Background>
+                            </Button>
+                            <Button Name="PresetsLeaf1Button" Content="Leaf1" Click="GetIfsMapleLeaf1PresetsClick">
                                 <Button.Background>
                                     <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
                                 </Button.Background>

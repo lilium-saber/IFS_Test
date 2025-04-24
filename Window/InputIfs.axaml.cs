@@ -78,9 +78,15 @@ public partial class InputIfs : Avalonia.Controls.Window
         InputIfsTurn2Tab();
     }
 
-    private void GetIfsLeaf0PresetsClick(object sender, RoutedEventArgs e)
+    private void GetIfsMapleLeaf0PresetsClick(object sender, RoutedEventArgs e)
     {
         InputIfsChangeDataGrid(TransformationCode.TransformationLeaf0);
+        InputIfsTurn2Tab();
+    }
+
+    private void GetIfsMapleLeaf1PresetsClick(object sender, RoutedEventArgs e)
+    {
+        InputIfsChangeDataGrid(TransformationCode.TransformationLeaf1);
         InputIfsTurn2Tab();
     }
 
@@ -108,22 +114,15 @@ public partial class InputIfs : Avalonia.Controls.Window
         // }
         // colors.ForEach(_ => Console.WriteLine($"{_}"));
         IImageSave imageSave = new ImageSave();
-        _imageData = imageSave.GetWhitePngEncode(list, colors); // RGBA格式
+        _imageData = imageSave.GetWhitePngEncode(list, colors, (int)2e5); // RGBA格式
         
         _hasImage = true;
         UpdateInputIfsSaveButton();
         
-        // foreach (var data in IfsDatas)
-        // {
-        //     Console.WriteLine($"a={data.a}, b={data.b}, c={data.c}, d={data.d}, e={data.e}, f={data.f}, p={data.p}");
-        // }
         using var stream = new MemoryStream(_imageData);
         _bitmap = new Bitmap(stream);
         var image = this.FindControl<Image>("InputImageShow");
-        if (image is not null)
-        {
-            image.Source = _bitmap;
-        }
+        image!.Source = _bitmap;
     }
 
     [Obsolete("Obsolete")]
@@ -173,15 +172,21 @@ public partial class InputIfs : Avalonia.Controls.Window
     
     private void InputAddRowClick(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine($"InputAddRowClick{IfsDatas?.Count}");
+        // Console.WriteLine($"InputAddRowClick{IfsDatas?.Count}");
         IfsDatas!.Add(new());
     }
     
     private void InputClearRowClick(object sender, RoutedEventArgs e)
     {
-        Console.WriteLine($"InputClearRowClick{IfsDatas?.Count}");
+        // Console.WriteLine($"InputClearRowClick{IfsDatas?.Count}");
         IfsDatas!.Clear();
         IfsDatas.Add(new());
+        _bitmap = null;
+        _imageData = [];
+        var image = this.FindControl<Image>("InputImageShow");
+        image!.Source = null;
+        _hasImage = false;
+        UpdateInputIfsSaveButton();
     }
     
     private void InputDeleteRowClick(object sender, RoutedEventArgs e)
@@ -193,7 +198,7 @@ public partial class InputIfs : Avalonia.Controls.Window
             IfsDatas.RemoveAt(IfsDatas.Count - 1);
             IfsDatas.Add(new());
         }
-        Console.WriteLine($"InputDeleteRowClick{IfsDatas?.Count}");
+        // Console.WriteLine($"InputDeleteRowClick{IfsDatas?.Count}");
     }
     
     private PointColorType GetColorType(IBrush color)

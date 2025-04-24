@@ -57,5 +57,9 @@
       <AvaloniaResource Include="Picture\emoLa.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </AvaloniaResource>
+      <None Remove="Picture\earth.jpeg" />
+      <AvaloniaResource Include="Picture\earth.jpeg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </AvaloniaResource>
     </ItemGroup>
 </Project>

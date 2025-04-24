@@ -29,10 +29,17 @@ public static class TransformationCode
         (0.4m, 0.3m, -0.3m, 0.4m, 0.27m, 0.36m, 25),
         (0.4m, -0.3m, 0.3m, 0.4m, 0.27m, 0.09m, 25)];
     
+    public static List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)>
+        TransformationLeaf1 { get; } =
+        [(0.18m, 0, 0, 0.5m, -0.1m, -1.3m, 7),
+        (0.45m, 0.5m, -0.43m, 0.52m, 1.5m, -0.78m, 36),
+        (0.5m, -0.5m, 0.45m, 0.45m, -1.6m, -0.7m, 37),
+        (0.5m, 0.01m, 0, 0.5m, 0.1m, 1.6m, 20)];
+    
     public static List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> 
         TransformationFern0 { get; } =
-        [(0, 0, 0, 0.25m, 0, -0.14m, 2m),
-        (0.85m, 0.02m, -0.02m, 0.83m, 0, 1m, 84),
-        (0.09m, -0.28m, 0.3m, 0.11m, 0, 0.6m, 7),
-        (-0.09m, 0.25m, 0.3m, 0.09m, 0, 0.7m, 7)];
+        [(0, 0, 0, 0.16m, 0, 0, 1m),
+        (0.85m, 0.04m, -0.04m, 0.85m, 0, 1.6m, 85m),
+        (0.2m, -0.26m, 0.23m, 0.22m, 0, 1.6m, 7m),
+        (-0.15m, 0.28m, 0.26m, 0.24m, 0, 0.44m, 7m)];
 }

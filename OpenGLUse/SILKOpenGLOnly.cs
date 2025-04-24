@@ -21,9 +21,10 @@ public class SILKOpenGLOnly
 {
     private GL? _gl;
     private IWindow? _window;
-    private readonly Camera _camera;
-    private readonly LightObject _sunLight;
-    private readonly IfsResObject _ifsResObject;
+    private readonly Camera _camera = new();
+    private readonly LightObject _sunLight = new();
+    private readonly EarthObject _earthObject = new();
+    private readonly IfsResObject _ifsResObject = new();
     private uint _vao; // 顶点数组对象
     private uint _vbo; // 顶点缓冲对象 
     private uint _ebo; // 索引缓冲对象
@@ -47,7 +48,7 @@ public class SILKOpenGLOnly
 
     private float _lastX = _weight / 2;
     private float _lastY = _height / 2;
-    private float _yaw = 0.0f;
+    private float _yaw = -90.0f;
     private float _pitch = 0.0f;
     // private bool _firstMouse = true;
     private bool _useMouse = true;
@@ -55,6 +56,8 @@ public class SILKOpenGLOnly
     private Vector3 _saveFront;
     private float _saveYaw;
     private float _savePitch;
+    
+    private bool _rowObject = false;
     
     private IInputContext? _input;
 
@@ -66,6 +69,10 @@ public class SILKOpenGLOnly
         
         switch (key)
         {
+            case Key.R:
+                _rowObject = !_rowObject;
+                Console.WriteLine($"row view: {_rowObject}");
+                break;
             case Key.M:
                 _useMouse = !_useMouse;
                 if(_useMouse)
@@ -138,10 +145,12 @@ public class SILKOpenGLOnly
         _yaw += offsetX;
         _pitch += offsetY;
 
-        if (_yaw >= 90.0f)
-            _yaw = 89.0f;
+        // if (_yaw >= 90.0f)
+        //     _yaw = 89.0f;
         if(_pitch <= -90.0f)
-            _pitch = -89.0f;
+            _pitch = -90.0f;
+        if(_pitch >= 90.0f)
+            _pitch = 90.0f;
 
         var front = new Vector3
         {
@@ -163,27 +172,39 @@ public class SILKOpenGLOnly
             _camera.Fov = 45.0f;
     }
         
-    private unsafe void OnRender(double temp)
+    private void OnRender(double time)
     {
         _gl!.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+        _gl.ClearColor(Color.DimGray);
         
         var nowTime = (float)_window!.Time;
         _deltaTime = nowTime - _lastTime;
         _lastTime = nowTime;
+        
+        const float radius = 5.0f;
+        _sunLight.LightPosition = new(radius * MathF.Cos(nowTime), 2.0f, radius * MathF.Sin(nowTime));
+
+        if (_rowObject)
+        {
+            var temp = Matrix4x4.CreateRotationY(_deltaTime * 0.5f);
+            _ifsResObject.ModelMatrix = temp * _ifsResObject.ModelMatrix;
+        }
+        // Console.WriteLine($"moldel matrix: {_ifsResObject.ModelMatrix}");
+        
         var view = _camera.ViewMatrix;
-        var axis = new Vector3(0.5f, 1.0f, 0);
-        var model = Matrix4x4.Identity;
-        model = Matrix4x4.CreateFromAxisAngle(axis, 50.0f) * model;
+        // var axis = new Vector3(0.5f, 1.0f, 0);
+        // var model = Matrix4x4.Identity;
+        // model = Matrix4x4.CreateFromAxisAngle(axis, 50.0f) * model;
         // var view = Matrix4x4.CreateTranslation(0.0f, 0.0f, -3.0f);
-        var proj = Matrix4Calculator.CreatePerspective(Matrix4Calculator.GetRadians(_camera.Fov), (float)_window.Size.X / _window.Size.Y, 0.1f, 100.0f);
+        var proj = Matrix4Calculator.CreatePerspective(Matrix4Calculator.GetRadians(_camera.Fov), (float)_window.Size.X / _window.Size.Y, 0.1f, 300.0f);
+        
         
         _sunLight.RenderLight(ref _gl, view, proj);
         _ifsResObject.DrawResObject(ref _gl, view, proj, _sunLight.LightPosition, _sunLight.LightColor, _camera.CameraPos);
-        const float radius = 5.0f;
-        _sunLight.LightPosition = new(radius * MathF.Cos(nowTime), 2.0f, radius * MathF.Sin(nowTime));
+        _earthObject.RenderEarthObject(ref _gl, view, proj, _sunLight.LightPosition, _sunLight.LightColor, _camera.CameraPos);
     }
 
-    private unsafe void OnLoad()
+    private void OnLoad()
     {
         if (_input is null)
         {
@@ -211,78 +232,10 @@ public class SILKOpenGLOnly
         // 其他物体的代码
         _sunLight.LoadLight(ref _gl); // 光照物体
         _ifsResObject.LoadResObject(ref _gl, ref _pic);
+        _earthObject.LoadEarthObject(ref _gl);
         
         _gl.Enable(EnableCap.Blend);
         _gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
-    }
-
-    private unsafe void LoadTexture(byte[] pictures)
-    {
-        if (pictures.Length == 0)
-        {
-            Console.WriteLine("Texture file not found");
-            return;
-        }
-        Console.WriteLine($"Loading texture...");
-        using var imageStream = new MemoryStream(pictures);
-        var image = ImageResult.FromStream(imageStream, ColorComponents.RedGreenBlueAlpha);
-        _textures.Add(_gl!.GenTexture());
-        _gl.BindTexture(TextureTarget.Texture2D, _textures[^1]);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)TextureWrapMode.Repeat);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)TextureWrapMode.Repeat);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)TextureMinFilter.Linear);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)TextureMagFilter.Linear);
-        
-        fixed (byte* data = image.Data)
-        {
-            _gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba,
-                IFS_line.Ults.Ults.BitmapLen, IFS_line.Ults.Ults.BitmapLen, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
-        }
-        
-        _gl.GenerateMipmap(TextureTarget.Texture2D);
-    }
-
-    private unsafe void LoadTexture(string pngPath, int pictureType = 0)
-    {
-        if (!File.Exists(pngPath))
-        {
-            Console.WriteLine($"Texture file not found: {pngPath}");
-            return;
-        }
-        Console.WriteLine($"{pngPath} Loading texture...");
-        _textures.Add(_gl!.GenTexture());
-        _gl.BindTexture(TextureTarget.Texture2D, _textures[^1]);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapS, (int)TextureWrapMode.Repeat);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureWrapT, (int)TextureWrapMode.Repeat);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMinFilter, (int)TextureMinFilter.Linear);
-        _gl.TexParameter(TextureTarget.Texture2D, GLEnum.TextureMagFilter, (int)TextureMagFilter.Linear);
-        
-        using var imageStream = File.OpenRead(pngPath);
-        var image = pictureType switch
-        {
-            1 => ImageResult.FromStream(imageStream),
-            _ => ImageResult.FromStream(imageStream, ColorComponents.RedGreenBlueAlpha)
-        };
-        // 反转图像数据
-        var width = image.Width;
-        var height = image.Height;
-        var channels = (int)image.Comp;
-        var reversedData = new byte[image.Data.Length];
-        for (var y = 0; y < height; y++)
-        {
-            for (var x = 0; x < width * channels; x++)
-            {
-                reversedData[(height - 1 - y) * width * channels + x] = image.Data[y * width * channels + x];
-            }
-        }
-
-        fixed (byte* data = reversedData)
-        {
-            _gl.TexImage2D(TextureTarget.Texture2D, 0, (int)InternalFormat.Rgba, 
-                (uint)image.Width, (uint)image.Height, 0, PixelFormat.Rgba, PixelType.UnsignedByte, data);
-        }
-        
-        _gl.GenerateMipmap(TextureTarget.Texture2D);
     }
 
     private void OnClose()
@@ -353,9 +306,6 @@ public class SILKOpenGLOnly
 
     public SILKOpenGLOnly()
     {
-        _camera = new();
-        _sunLight = new();
-        _ifsResObject = new();
         _vaos = [];
         _vbos = [];
         _ebos = [];
@@ -371,9 +321,6 @@ public class SILKOpenGLOnly
     public SILKOpenGLOnly(List<MathNet.Numerics.LinearAlgebra.Vector<float>> points)
     {
         _points = points;
-        _camera = new();
-        _sunLight = new();
-        _ifsResObject = new();
         _vaos = [];
         _vbos = [];
         _ebos = [];
@@ -387,9 +334,6 @@ public class SILKOpenGLOnly
     public SILKOpenGLOnly(List<byte[]> pictures)
     {
         _pictures = pictures;
-        _camera = new();
-        _sunLight = new();
-        _ifsResObject = new();
         _points = [];
         _vaos = [];
         _vbos = [];

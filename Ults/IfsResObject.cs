@@ -14,8 +14,8 @@ internal class IfsResObject
     private uint FragmentShader {get; set;}
     private uint Texture {get; set;}
     
-    internal Matrix4x4 ModelMatrix {get; set;}
-    internal Vector3 ObjectColor {get; set;}
+    internal Matrix4x4 ModelMatrix {get; set;} = Matrix4x4.Identity;
+    internal Vector3 ObjectColor {get; set;} = new(1.0f, 0.5f, 0.3f); 
     
     private readonly float[] _vertex = 
         [
@@ -27,10 +27,10 @@ internal class IfsResObject
             -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
 
             0.0f, -0.5f, -0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
-            0.0f,  0.5f, -0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 1.0f,
+            0.0f,  0.5f, -0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 1.0f,
             0.0f,  0.5f,  0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
             0.0f,  0.5f,  0.5f,  1.0f, 1.0f,  1.0f, 0.0f, 1.0f,
-            0.0f, -0.5f,  0.5f,  0.0f, 1.0f,  1.0f, 0.0f, 1.0f,
+            0.0f, -0.5f,  0.5f,  1.0f, 0.0f,  1.0f, 0.0f, 1.0f,
             0.0f, -0.5f, -0.5f,  0.0f, 0.0f,  1.0f, 0.0f, 1.0f,
         ];
     private const string VertexCode =   """
@@ -60,6 +60,9 @@ internal class IfsResObject
                                         uniform vec3 lightColor;
                                         uniform vec3 lightPos;
                                         uniform vec3 viewPos;
+                                        uniform float linear2;
+                                        uniform float quadratic3;
+                                        uniform float minLight;
                                         in vec2 TexCoord;
                                         in vec3 Normal;
                                         in vec3 FragPos;
@@ -75,15 +78,23 @@ internal class IfsResObject
                                             vec3 norm = normalize(Normal);
                                             vec3 lightDir = normalize(lightPos - FragPos);
                                             
+                                            float distance = length(lightPos - FragPos);
+                                            float attenuation = 1.0 / (1.0 + linear2 * distance + quadratic3 * (distance * distance));
+                                            
                                             vec3 viewDir = normalize(viewPos - FragPos);
                                             vec3 reflectDir = reflect(-lightDir, norm);
                                             float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
                                             vec3 specular = specularStrength * spec * lightColor;
                                             
-                                            vec3 ambient = 0.2 * lightColor;
+                                            vec3 ambient = 0.25 * lightColor;
                                             float diff = max(dot(norm, lightDir), 0.0);
                                             vec3 diffuse = diff * lightColor;
-                                            vec3 result = (ambient + diffuse + specular) * objectColor;
+                                            
+                                            ambient *= attenuation;
+                                            diffuse *= attenuation;
+                                            specular *= attenuation;
+                                            vec3 result = (ambient + diffuse + specular);
+                                            result = max(result, vec3(minLight));
                                             out_color = vec4(texColor.rgb * result, texColor.a);
                                         }
                                         """;
@@ -115,7 +126,6 @@ internal class IfsResObject
         
         const uint positionLoc = 0;
         gl.EnableVertexAttribArray(positionLoc);
-        
         gl.VertexAttribPointer(positionLoc, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*) 0);
         const uint texCoordLoc = 1;
         gl.EnableVertexAttribArray(texCoordLoc);
@@ -135,8 +145,9 @@ internal class IfsResObject
     {
         gl.UseProgram(Program);
         gl.BindVertexArray(Vao);
-        var axis = new Vector3(0.5f, 1.0f, 0);
-        var model = Matrix4x4.CreateFromAxisAngle(axis, 50.0f) * ModelMatrix;
+        // var axis = new Vector3(0.5f, 1.0f, 0);
+        // var model = Matrix4x4.CreateFromAxisAngle(axis, 50.0f) * ModelMatrix;
+        var model = Matrix4x4.CreateTranslation(0.0f, 0.5f, 0.0f) * ModelMatrix;
         var modelLoc = gl.GetUniformLocation(Program, "model");
         gl.UniformMatrix4(modelLoc, 1, false, (float*)&model);
         var viewLoc = gl.GetUniformLocation(Program, "view");
@@ -150,8 +161,11 @@ internal class IfsResObject
         
         gl.Uniform3(gl.GetUniformLocation(Program, "lightColor"), lightColor);
         gl.Uniform3(gl.GetUniformLocation(Program, "objectColor"), ObjectColor);
-        gl.Uniform3(gl.GetUniformLocation(Program, "lightPos"), lightPos);
+        gl.Uniform3(gl.GetUniformLocation(Program, "lightPos"), lightPos);  
         gl.Uniform3(gl.GetUniformLocation(Program, "viewPos"), viewPos); // 用于计算光照
+        gl.Uniform1(gl.GetUniformLocation(Program, "linear2"), 0.09f);
+        gl.Uniform1(gl.GetUniformLocation(Program, "quadratic3"), 0.032f);
+        gl.Uniform1(gl.GetUniformLocation(Program, "minLight"), OpenGlUlts.MinLightStrength);
         gl.DrawArrays(PrimitiveType.Triangles, 0, 12);
     }
 
@@ -181,9 +195,5 @@ internal class IfsResObject
         gl.GenerateMipmap(TextureTarget.Texture2D);
     }
 
-    internal IfsResObject()
-    {
-        ModelMatrix = Matrix4x4.Identity;
-        ObjectColor = new Vector3(1.0f, 0.5f, 0.3f);
-    }
+    internal IfsResObject() { }
 }
