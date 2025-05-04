@@ -23,14 +23,17 @@ namespace IFS_line.Point
             int counts = (int)1e5, decimal x = 0, decimal y = 0, int bitmapLenght = 500)
         {
             List<(decimal x, decimal y)> points = [];
-            for(int i = 0; i < counts; i++)
+            for(var i = 0; i < counts; i++)
             {
                 var temp = _random.Next(100) + 1; // [1, 100]
                 foreach (var (a, b, c, d, e, f, p) in transformations)
                 {
                     if(temp <= (int)p)
                     {
-                        points.Add(GetPointSet(bitmapLenght, a, b, c, d, e, f, ref x, ref y));
+                        // points.Add(GetPointSet(bitmapLenght, a, b, c, d, e, f, ref x, ref y));
+                        x = a * x + b * y + e;
+                        y = c * x + d * y + f;
+                        points.Add((x * bitmapLenght, y * bitmapLenght));
                         break;
                     }
                     else
@@ -48,15 +51,18 @@ namespace IFS_line.Point
             int counts = (int)1e5, decimal x = 0, decimal y = 0, int bitmapLenght = 500)
         {
             List<(decimal x, decimal y, PointColorType t)> points = [];
-            for(int i = 0; i < counts; i++)
+            for(var i = 0; i < counts; i++)
             {
                 var temp = _random.Next(100) + 1; // [1, 100]
                 foreach (var (a, b, c, d, e, f, p, type) in transformations)
                 {
                     if(temp <= (int)p)
                     {
-                        var res = GetPointSet(bitmapLenght, a, b, c, d, e, f, ref x, ref y);
-                        points.Add((res.x0, res.y0, type));
+                        // var res = GetPointSet(bitmapLenght, a, b, c, d, e, f, ref x, ref y);
+                        // points.Add((res.x0, res.y0, type));
+                        x = a * x + b * y + e;
+                        y = c * x + d * y + f;
+                        points.Add((x * bitmapLenght, y * bitmapLenght, type));
                         break;
                     }
                     else

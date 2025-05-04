@@ -23,7 +23,7 @@ public enum PointColorType
 
 namespace IFS_line.PictureSave
 {
-    public class ImageSave : IImageSave
+    public sealed class ImageSave : IImageSave
     {
         private Rgba32 GetColor(PointColorType color)
         {
@@ -168,7 +168,7 @@ namespace IFS_line.PictureSave
             List<PointColorType> colors,
             int counts = (int)1e5, decimal x = 0, decimal y = 0)
         {
-            var image = new Image<Rgba32>(Ults.Ults.BitmapLen, Ults.Ults.BitmapLen, new Rgba32(255, 255, 255, 0));
+            using var image = new Image<Rgba32>(Ults.Ults.BitmapLen, Ults.Ults.BitmapLen, new Rgba32(255, 255, 255, 0));
             List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p, PointColorType type)> tranCats = 
                 [..transformations.Zip(colors, (x, y) => (x.a, x.b, x.c, x.d, x.e, x.f, x.p, y))];
             var points = PointCalculator.GetPointList(tranCats, counts, x, y);
@@ -176,12 +176,16 @@ namespace IFS_line.PictureSave
 
             if (counts != 0)
             {
-                var (minX, maxX, minY, maxY) = (points.Min(p => p.x), points.Max(p => p.x), points.Min(p => p.y), points.Max(p => p.y));
-                var (scaleX, scaleY) = (Ults.Ults.BitmapLen / (maxX - minX), Ults.Ults.BitmapLen / (maxY - minY));
+                var (minX, maxX, minY, maxY) = 
+                    (points.Min(p => p.x), points.Max(p => p.x), points.Min(p => p.y), points.Max(p => p.y));
+                var scale = Math.Min(Ults.Ults.BitmapLen / (maxX - minX), Ults.Ults.BitmapLen / (maxY - minY)); // 固定比例
+                var offsetX = (Ults.Ults.BitmapLen - (int)((maxX - minX) * scale)) / 2; // 居中偏移
+                var offsetY = (Ults.Ults.BitmapLen - (int)((maxY - minY) * scale)) / 2;
+
                 points.ForEach(_ =>
                 {
-                    var (x0, y0) = ((int)((_.x - minX) * scaleX), (int)((_.y - minY) * scaleY));
-                    if (x0 >= 0 && x0 < Ults.Ults.BitmapLen && y0 >= 0 && y0 < Ults.Ults.BitmapLen)
+                    var (x0, y0) = ((int)((_.x - minX) * scale) + offsetX, (int)((_.y - minY) * scale) + offsetY);
+                    if (x0 is >= 0 and < Ults.Ults.BitmapLen && y0 is >= 0 and < Ults.Ults.BitmapLen)
                     {
                         image[x0, y0] = GetColor(_.type);
                     }
