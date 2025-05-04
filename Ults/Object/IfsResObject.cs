@@ -4,7 +4,7 @@ using System.Numerics;
 using Silk.NET.OpenGL;
 using StbImageSharp;
 
-namespace AvaloniaApp.Ults;
+namespace AvaloniaApp.Ults.Object;
 
 internal class IfsResObject
 {
@@ -167,6 +167,7 @@ internal class IfsResObject
         gl.Uniform1(gl.GetUniformLocation(Program, "quadratic3"), 0.032f);
         gl.Uniform1(gl.GetUniformLocation(Program, "minLight"), OpenGlUlts.MinLightStrength);
         gl.DrawArrays(PrimitiveType.Triangles, 0, 12);
+        gl.BindVertexArray(0);
     }
 
     private unsafe void LoadTexture(ref GL gl, ref byte[] picture)

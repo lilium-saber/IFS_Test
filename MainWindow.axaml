@@ -5,15 +5,24 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
         x:Class="AvaloniaApp.MainWindow"
         Title="MainWindow">
-    <StackPanel>
-        <Button Click="OpenShowWindowClick" Name="OpenShowOpenGlButton">
-            <TextBlock Name="OpenGlText">OpenGLWindow</TextBlock>
-        </Button>
-        <Button Click="IfsImageClick" Name="ShowIfsImageButton">
-            <TextBlock Name="ShowImageText">ShowDefaultImage</TextBlock>
-        </Button>
-        <Button Click="OpenInputIfsClick" Name="InputIfsButton">
-            <TextBlock Name="InputIfsText">InputIFS</TextBlock>
-        </Button>
-    </StackPanel>
+    <Grid ColumnDefinitions="*, *">
+        <StackPanel Grid.Column="0">
+            <TextBlock HorizontalAlignment="Center">Testing</TextBlock>
+            <Button Click="OpenShowWindowClick" Name="OpenShowOpenGlButton">
+                <TextBlock Name="OpenGlText">OpenGLWindow</TextBlock>
+            </Button>
+            <Button Click="IfsImageClick" Name="ShowIfsImageButton">
+                <TextBlock Name="ShowImageText">ShowDefaultImage</TextBlock>
+            </Button>
+            <Button Click="OpenOtherGlClick" Name="OpenOtherButton">
+                <TextBlock Name="OtherTextBlock">OtherOpenGl</TextBlock>
+            </Button>
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <TextBlock HorizontalAlignment="Center">Use</TextBlock>
+            <Button Click="OpenInputIfsClick" Name="InputIfsButton">
+                <TextBlock Name="InputIfsText">InputIFS</TextBlock>
+            </Button>
+        </StackPanel>
+    </Grid>
 </Window>

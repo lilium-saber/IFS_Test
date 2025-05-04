@@ -6,6 +6,7 @@ using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography.X509Certificates;
 using AvaloniaApp.Ults;
+using AvaloniaApp.Ults.Object;
 using MathNet.Numerics.LinearAlgebra.Single;
 using Silk.NET.GLFW;
 using Silk.NET.Input;
@@ -25,6 +26,7 @@ public class SILKOpenGLOnly
     private readonly LightObject _sunLight = new();
     private readonly EarthObject _earthObject = new();
     private readonly IfsResObject _ifsResObject = new();
+    private readonly SkyBox _skyBox = new();
     private uint _vao; // 顶点数组对象
     private uint _vbo; // 顶点缓冲对象 
     private uint _ebo; // 索引缓冲对象
@@ -108,10 +110,10 @@ public class SILKOpenGLOnly
                 _camera.CameraPos -= _camera.CameraSpeed * 1.5f * _camera.CameraFront;
                 break;
             case Key.A:
-                _camera.CameraPos -= Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.CameraFront.X, 0.0f, _camera.CameraFront.Z)), _camera.CameraUp)) * _camera.CameraSpeed / 2;
+                _camera.CameraPos -= Vector3.Normalize(Vector3.Cross(Vector3.Normalize(_camera.CameraFront with { Y = 0.0f }), _camera.CameraUp)) * _camera.CameraSpeed / 2;
                 break;
             case Key.D:
-                _camera.CameraPos += Vector3.Normalize(Vector3.Cross(Vector3.Normalize(new(_camera.CameraFront.X, 0.0f, _camera.CameraFront.Z)), _camera.CameraUp)) * _camera.CameraSpeed / 2;
+                _camera.CameraPos += Vector3.Normalize(Vector3.Cross(Vector3.Normalize(_camera.CameraFront with { Y = 0.0f }), _camera.CameraUp)) * _camera.CameraSpeed / 2;
                 break;
             case Key.Space:
                 _camera.CameraPos += _camera.CameraSpeed * _camera.CameraUp;
@@ -175,7 +177,7 @@ public class SILKOpenGLOnly
     private void OnRender(double time)
     {
         _gl!.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-        _gl.ClearColor(Color.DimGray);
+        _gl.ClearColor(Color.Aquamarine);
         
         var nowTime = (float)_window!.Time;
         _deltaTime = nowTime - _lastTime;
@@ -189,7 +191,7 @@ public class SILKOpenGLOnly
             var temp = Matrix4x4.CreateRotationY(_deltaTime * 0.5f);
             _ifsResObject.ModelMatrix = temp * _ifsResObject.ModelMatrix;
         }
-        // Console.WriteLine($"moldel matrix: {_ifsResObject.ModelMatrix}");
+        // Console.WriteLine($"model matrix: {_ifsResObject.ModelMatrix}");
         
         var view = _camera.ViewMatrix;
         // var axis = new Vector3(0.5f, 1.0f, 0);
@@ -198,10 +200,10 @@ public class SILKOpenGLOnly
         // var view = Matrix4x4.CreateTranslation(0.0f, 0.0f, -3.0f);
         var proj = Matrix4Calculator.CreatePerspective(Matrix4Calculator.GetRadians(_camera.Fov), (float)_window.Size.X / _window.Size.Y, 0.1f, 300.0f);
         
-        
         _sunLight.RenderLight(ref _gl, view, proj);
         _ifsResObject.DrawResObject(ref _gl, view, proj, _sunLight.LightPosition, _sunLight.LightColor, _camera.CameraPos);
-        _earthObject.RenderEarthObject(ref _gl, view, proj, _sunLight.LightPosition, _sunLight.LightColor, _camera.CameraPos);
+        // _earthObject.RenderEarthObject(ref _gl, view, proj, _sunLight.LightPosition, _sunLight.LightColor, _camera.CameraPos);
+        _skyBox.RenderSkyBox(ref _gl, view, proj);
     }
 
     private void OnLoad()
@@ -232,7 +234,8 @@ public class SILKOpenGLOnly
         // 其他物体的代码
         _sunLight.LoadLight(ref _gl); // 光照物体
         _ifsResObject.LoadResObject(ref _gl, ref _pic);
-        _earthObject.LoadEarthObject(ref _gl);
+        _skyBox.LoadSkyBox(ref _gl);
+        // _earthObject.LoadEarthObject(ref _gl);
         
         _gl.Enable(EnableCap.Blend);
         _gl.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);

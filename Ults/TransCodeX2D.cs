@@ -2,7 +2,7 @@
 
 namespace AvaloniaApp.Ults;
 
-public static class TransformationCode
+public static class TransCodeX2D
 {
     public static List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> 
         TransformationTree0 { get; } =
@@ -42,4 +42,19 @@ public static class TransformationCode
         (0.85m, 0.04m, -0.04m, 0.85m, 0, 1.6m, 85m),
         (0.2m, -0.26m, 0.23m, 0.22m, 0, 1.6m, 7m),
         (-0.15m, 0.28m, 0.26m, 0.24m, 0, 0.44m, 7m)];
+}
+
+public static class TransCodeX3D
+{
+    public static List<X3dIfs> Tree1 { get; } =
+        [new(0.5m, 0, 0, 0, 0.5m, 0, 0, 0.7m, 0, 0, 0, 0, 25),
+        new(-0.689m, 0.122m, 0, -0.105m, -0.597m, -0.35m, -0.061m, -0.345m, 0.606m, 0, 0, 0, 25),
+        new(-0.061m, -0.697m, 0, 0.493m, 0.131m, -0.495m, 0.493m, -0.043m, 0.495m, 0, 0, -0.1m, 25),
+        new(0.536m, 0.45m, 0, -0.39m, 0.464m, -0.35m, -0.225m, 0.268m, 0.606m, 0, 0, -0.05m, 25),];
+
+    public static List<X3dIfs> Tree2 { get; } =
+        [new(0.05m, 0, 0, 0, 0.6m, 0, 0, 0, 0.5m, 0, 0, 0, 15),
+        new(0.45m, -0.15m, 0, 0.2m, 0.4m, -0.1m, 0, 0.1m, 0.4m, 0.8m, 1.5m, 10.0m, 35),
+        new(0.45m, 0.15m, 0, -0.2m, 0.4m, -0.1m, 0, -0.1m, 0.4m, -0.8m, 1.5m, -10.0m, 35),
+        new(0.3m, 0, 0, 0, 0.3m, 0, 0, 0, 0.3m, 0, 2.0m, 0, 15),];
 }

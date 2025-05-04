@@ -33,13 +33,11 @@ public partial class InputIfs : Avalonia.Controls.Window
     {
         var button = this.FindControl<Button>("InputSaveImageButton");
         var openGlButton = this.FindControl<Button>("InputImage2OpenGlButton");
-        if(button is not null && openGlButton is not null)
-        {
-            openGlButton.IsEnabled = _hasImage;
-            button.IsEnabled = _hasImage;
-            button.Content = _hasImage ? "Save" : "Unused";
-            openGlButton.Content = _hasImage ? "Go To OpenGL" : "Unused";
-        }
+        if (button is null || openGlButton is null) return;
+        openGlButton.IsEnabled = _hasImage;
+        button.IsEnabled = _hasImage;
+        button.Content = _hasImage ? "Save" : "Unused";
+        openGlButton.Content = _hasImage ? "Go To OpenGL" : "Unused";
     }
 
     private void InputIfsTurn2Tab()
@@ -62,67 +60,73 @@ public partial class InputIfs : Avalonia.Controls.Window
 
     private void GetIfsTree0PresetsClick(object sender, RoutedEventArgs e)
     {
-        InputIfsChangeDataGrid(TransformationCode.TransformationTree0);
+        InputIfsChangeDataGrid(TransCodeX2D.TransformationTree0);
         InputIfsTurn2Tab();
     }
 
     private void GetIfsTree1PresetsClick(object sender, RoutedEventArgs e)
     {
-        InputIfsChangeDataGrid(TransformationCode.TransformationTree1);
+        InputIfsChangeDataGrid(TransCodeX2D.TransformationTree1);
         InputIfsTurn2Tab();
     }
 
     private void GetIfsFern0PresetsClick(object sender, RoutedEventArgs e)
     {
-        InputIfsChangeDataGrid(TransformationCode.TransformationFern0);
+        InputIfsChangeDataGrid(TransCodeX2D.TransformationFern0);
         InputIfsTurn2Tab();
     }
 
     private void GetIfsMapleLeaf0PresetsClick(object sender, RoutedEventArgs e)
     {
-        InputIfsChangeDataGrid(TransformationCode.TransformationLeaf0);
+        InputIfsChangeDataGrid(TransCodeX2D.TransformationLeaf0);
         InputIfsTurn2Tab();
     }
 
     private void GetIfsMapleLeaf1PresetsClick(object sender, RoutedEventArgs e)
     {
-        InputIfsChangeDataGrid(TransformationCode.TransformationLeaf1);
+        InputIfsChangeDataGrid(TransCodeX2D.TransformationLeaf1);
         InputIfsTurn2Tab();
     }
 
     private async void GetJpgImageClick(object sender, RoutedEventArgs e)
     {
-        if (IfsDatas.Count == 0)
+        try
         {
-            var warning = new Warning("Please add at least one row");
-            await warning.ShowDialog(this).ConfigureAwait(true);
-            return;
-        }
-        if(IfsDatas.Sum(_ => _.p) != 100.0m)
-        {
-            var warning = new Warning("Please add all the probability to 100%");
-            await warning.ShowDialog(this).ConfigureAwait(true);
-            return;
-        }
+            if (IfsDatas.Count == 0)
+            {
+                var warning = new Warning("Please add at least one row");
+                await warning.ShowDialog(this).ConfigureAwait(true);
+                return;
+            }
+            if(IfsDatas.Sum(_ => _.p) != 100.0m)
+            {
+                var warning = new Warning("Please add all the probability to 100%");
+                await warning.ShowDialog(this).ConfigureAwait(true);
+                return;
+            }
 
-        List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> list =
-            [..IfsDatas.Select(_ => (_.a, _.b, _.c, _.d, _.e, _.f, _.p))];
-        var colors = IfsDatas.Select(_ => GetColorType(_.SelectedColor)).ToList();
-        // foreach (var ifsData in IfsDatas)
-        // {
-        //     Console.WriteLine(ifsData.SelectedColor.ToString());
-        // }
-        // colors.ForEach(_ => Console.WriteLine($"{_}"));
-        IImageSave imageSave = new ImageSave();
-        _imageData = imageSave.GetWhitePngEncode(list, colors, (int)2e5); // RGBA格式
+            var list = IfsDatas.Select(_ => (_.a, _.b, _.c, _.d, _.e, _.f, _.p)).ToList();
+            var colors = IfsDatas.Select(_ => GetColorType(_.SelectedColor)).ToList();
+            // foreach (var ifsData in IfsDatas)
+            // {
+            //     Console.WriteLine(ifsData.SelectedColor.ToString());
+            // }
+            // colors.ForEach(_ => Console.WriteLine($"{_}"));
+            IImageSave imageSave = new ImageSave();
+            _imageData = imageSave.GetWhitePngEncode(list, colors, (int)1.5e5); // RGBA格式
         
-        _hasImage = true;
-        UpdateInputIfsSaveButton();
+            _hasImage = true;
+            UpdateInputIfsSaveButton();
         
-        using var stream = new MemoryStream(_imageData);
-        _bitmap = new Bitmap(stream);
-        var image = this.FindControl<Image>("InputImageShow");
-        image!.Source = _bitmap;
+            using var stream = new MemoryStream(_imageData);
+            _bitmap = new Bitmap(stream);
+            var image = this.FindControl<Image>("InputImageShow");
+            image!.Source = _bitmap;
+        }
+        catch (Exception errException)
+        {
+            Console.WriteLine(errException.Message);
+        }
     }
 
     [Obsolete("Obsolete")]

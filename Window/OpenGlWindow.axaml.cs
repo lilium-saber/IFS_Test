@@ -7,7 +7,6 @@ namespace AvaloniaApp.Window;
 
 public partial class OpenGlWindow : Avalonia.Controls.Window
 {
-    private OpenGlThread _openGlThread = new();
     
     private void InitializeComponent()
     {

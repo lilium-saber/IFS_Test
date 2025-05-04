@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using Silk.NET.OpenGL;
 
-namespace AvaloniaApp.Ults;
+namespace AvaloniaApp.Ults.Object;
 
 internal class LightObject
 {
@@ -132,5 +132,6 @@ internal class LightObject
         gl.UniformMatrix4(projLoc, 1, false, (float*)&projection);
         
         gl.DrawArrays(PrimitiveType.Triangles, 0, 36);
+        gl.BindVertexArray(0);
     }
 }

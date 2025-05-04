@@ -1,7 +1,6 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
-namespace AvaloniaApp.Ults;
+namespace AvaloniaApp.Ults.Object;
 
 public class Camera
 {

@@ -52,11 +52,17 @@ public partial class MainWindow : Avalonia.Controls.Window
     {
         var showIfs = new ShowIFSx2d();
         IImageSave imageSave = new ImageSave();
-        var transformation = TransformationCode.TransformationTree0;
+        var transformation = TransCodeX2D.TransformationTree0;
         var pictureByte = imageSave.GetWhiteJpegEncode(transformation);
         showIfs.SetImage(pictureByte);
 
         showIfs.ShowDialog(this).ConfigureAwait(true);
+    }
+    
+    private void OpenOtherGlClick(object sender, RoutedEventArgs e)
+    {
+        var otherGl = new OtherGl();
+        otherGl.ShowDialog(this).ConfigureAwait(true);
     }
 
     private void OpenInputIfsClick(object sender, RoutedEventArgs e)

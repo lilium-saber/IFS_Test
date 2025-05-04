@@ -4,7 +4,7 @@ using System.Numerics;
 using Silk.NET.OpenGL;
 using StbImageSharp;
 
-namespace AvaloniaApp.Ults;
+namespace AvaloniaApp.Ults.Object;
 
 internal class EarthObject
 {

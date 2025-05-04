@@ -9,4 +9,6 @@ internal static class OpenGlUlts
         get => _maxLightStrength;
         set => _maxLightStrength = value <= 0.1f ? 0.1f : value;
     }
+    
+    internal static int SocketPost { get; set; } = 12345;
 }
