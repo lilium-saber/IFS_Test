@@ -7,103 +7,161 @@
         x:Class="AvaloniaApp.Window.InputIfs"
         x:DataType="window:InputIfs"
         Title="InputIFS">
-    <Grid ColumnDefinitions="*,*">
-        <Border Grid.Column="0">
-            <TabControl Name="InputIfsTab" Margin="1" HorizontalAlignment="Center">
-                <TabItem Header="Customize">
-                    <Grid RowDefinitions="Auto, Auto,Auto,Auto">
-                        <!-- <Image Grid.Row="0" Source="../Picture/IfsX2d.png"></Image> -->
-                        <DataGrid Grid.Row="0" Name="IfsInputData" CanUserReorderColumns="False" ItemsSource="{Binding IfsDatas}"
-                                  CanUserResizeColumns="True" CanUserSortColumns="False" AutoGenerateColumns="False" MinWidth="100">
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="a" Binding="{Binding a}" Width="*"/>
-                                <DataGridTextColumn Header="b" Binding="{Binding b}" Width="*"/>
-                                <DataGridTextColumn Header="c" Binding="{Binding c}" Width="*"/>
-                                <DataGridTextColumn Header="d" Binding="{Binding d}" Width="*"/>
-                                <DataGridTextColumn Header="e" Binding="{Binding e}" Width="*"/>
-                                <DataGridTextColumn Header="f" Binding="{Binding f}" Width="*"/>
-                                <DataGridTextColumn Header="p/%" Binding="{Binding p}" Width="*"/>
-                                <DataGridTemplateColumn Header="Color">
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox ItemsSource="{Binding Colors}" SelectedItem="{Binding SelectedColor}" Width="100">
-                                                <ComboBox.ItemTemplate>
+    <Grid RowDefinitions="*">
+        <TabControl Name="InputIfsTabX2dAndX3d">
+            <TabItem Header="IfsX2d">
+                <Grid ColumnDefinitions="*,*">
+                    <Border Grid.Column="0">
+                        <TabControl Name="InputIfsTab">
+                            <TabItem Header="CustomizeX2d">
+                                <Grid RowDefinitions="Auto, Auto,Auto,Auto">
+                                    <!-- <Image Grid.Row="0" Source="../Picture/IfsX2d.png"></Image> -->
+                                    <DataGrid Grid.Row="0" Name="IfsInputData" CanUserReorderColumns="False" ItemsSource="{Binding IfsDatas}"
+                                              CanUserResizeColumns="True" CanUserSortColumns="False" AutoGenerateColumns="False" MinWidth="100">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="a" Binding="{Binding a}" Width="*"/>
+                                            <DataGridTextColumn Header="b" Binding="{Binding b}" Width="*"/>
+                                            <DataGridTextColumn Header="c" Binding="{Binding c}" Width="*"/>
+                                            <DataGridTextColumn Header="d" Binding="{Binding d}" Width="*"/>
+                                            <DataGridTextColumn Header="e" Binding="{Binding e}" Width="*"/>
+                                            <DataGridTextColumn Header="f" Binding="{Binding f}" Width="*"/>
+                                            <DataGridTextColumn Header="p/%" Binding="{Binding p}" Width="*"/>
+                                            <DataGridTemplateColumn Header="Color">
+                                                <DataGridTemplateColumn.CellTemplate>
                                                     <DataTemplate>
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <Border Width="16" Height="16" Background="{Binding}" Margin="0,0,5,0"/>
-                                                            <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
-                                                        </StackPanel>
+                                                        <ComboBox ItemsSource="{Binding Colors}" SelectedItem="{Binding SelectedColor}" Width="100">
+                                                            <ComboBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Border Width="16" Height="16" Background="{Binding}" Margin="0,0,5,0"/>
+                                                                        <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                </DataTemplate>
+                                                            </ComboBox.ItemTemplate>
+                                                        </ComboBox>
                                                     </DataTemplate>
-                                                </ComboBox.ItemTemplate>
-                                            </ComboBox>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
-                            <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the rows: </TextBlock>
-                            <Button Name="AddInputIfsRowButton" Background="Transparent" BorderBrush="Transparent" 
-                                    Click="InputAddRowClick">➕</Button>
-                            <Button Name="DeleteInputIfsRowButton" Background="Transparent" BorderBrush="Transparent"
-                                    Click="InputDeleteRowClick">➖</Button>
-                            <Button Name="InputClearRows" Content="Clear" Click="InputClearRowClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="OrangeRed" Opacity="0.2"></SolidColorBrush>
-                                </Button.Background>
-                                <Button.Styles>
-                                    <Style Selector="Button">
-                                        <Setter Property="CornerRadius" Value="90"/>
-                                    </Style>
-                                </Button.Styles>
-                            </Button>
-                        </StackPanel>
-                        <Button Grid.Row="2" Name="InputIfsImageSaveButton" Click="GetJpgImageClick" HorizontalAlignment="Center">CreateImage</Button>
-                    </Grid>
-                </TabItem>
-                <TabItem Header="Presets">
-                    <Grid RowDefinitions="Auto, Auto">
-                        <StackPanel Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-                            <Button Name="PresetsTree0Button" Content="Tree1" Click="GetIfsTree0PresetsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
-                                </Button.Background>
-                            </Button>
-                            <Button Name="PresetsTree1Button" Content="Tree2" Click="GetIfsTree1PresetsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
-                                </Button.Background>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-                            <Button Name="PresetsFern0Button" Content="Pear0" Click="GetIfsFern0PresetsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
-                                </Button.Background>
-                            </Button>
-                            <Button Name="PresetsLeaf0Button" Content="Leaf0" Click="GetIfsMapleLeaf0PresetsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
-                                </Button.Background>
-                            </Button>
-                            <Button Name="PresetsLeaf1Button" Content="Leaf1" Click="GetIfsMapleLeaf1PresetsClick">
-                                <Button.Background>
-                                    <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
-                                </Button.Background>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                </TabItem>
-            </TabControl>
-        </Border>
-        <Border Grid.Column="1">
-            <Grid RowDefinitions="*, Auto">
-                <Image Grid.Row="0" Name="InputImageShow" Stretch="Fill"></Image>
-                <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
-                    <Button Name="InputSaveImageButton" Click="InputSaveImageClick"></Button>
-                    <Button Name="InputImage2OpenGlButton" Click="InputImage2OpenGlClick"></Button>
-                </StackPanel>
-            </Grid>
-        </Border>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the rows: </TextBlock>
+                                        <Button Name="AddInputIfsRowButton" Background="Transparent" BorderBrush="Transparent" 
+                                                Click="InputAddRowClick">➕</Button>
+                                        <Button Name="DeleteInputIfsRowButton" Background="Transparent" BorderBrush="Transparent"
+                                                Click="InputDeleteRowClick">➖</Button>
+                                        <Button Name="InputClearRows" Content="Clear" Click="InputClearRowClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="OrangeRed" Opacity="0.2"></SolidColorBrush>
+                                            </Button.Background>
+                                            <Button.Styles>
+                                                <Style Selector="Button">
+                                                    <Setter Property="CornerRadius" Value="90"/>
+                                                </Style>
+                                            </Button.Styles>
+                                        </Button>
+                                    </StackPanel>
+                                    <Button Grid.Row="2" Name="InputIfsImageSaveButton" Click="GetJpgImageClick" HorizontalAlignment="Center">CreateImage</Button>
+                                </Grid>
+                            </TabItem>
+                            <TabItem Header="Presets">
+                                <Grid RowDefinitions="Auto, Auto">
+                                    <StackPanel Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                                        <Button Name="PresetsTree0Button" Content="Tree1" Click="GetIfsTree0PresetsClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                            </Button.Background>
+                                        </Button>
+                                        <Button Name="PresetsTree1Button" Content="Tree2" Click="GetIfsTree1PresetsClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                            </Button.Background>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                                        <Button Name="PresetsFern0Button" Content="Pear0" Click="GetIfsFern0PresetsClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                            </Button.Background>
+                                        </Button>
+                                        <Button Name="PresetsLeaf0Button" Content="Leaf0" Click="GetIfsMapleLeaf0PresetsClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                            </Button.Background>
+                                        </Button>
+                                        <Button Name="PresetsLeaf1Button" Content="Leaf1" Click="GetIfsMapleLeaf1PresetsClick">
+                                            <Button.Background>
+                                                <SolidColorBrush Color="Aqua" Opacity="0.1"></SolidColorBrush>
+                                            </Button.Background>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Border>
+                    <Border Grid.Column="1">
+                        <Grid RowDefinitions="Auto, Auto">
+                            <Image Grid.Row="0" Name="InputImageShow" Stretch="Fill"></Image>
+                            <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal" Spacing="10">
+                                <Button Name="InputSaveImageButton" Click="InputSaveImageClick"></Button>
+                                <Button Name="InputImage2OpenGlTextureButton" Click="InputImage2OpenGlClick"></Button>
+                                <Button Name="InputImage2OpenGlScattersButton" Click="InputImage2OpenGlScattersClick"></Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+            <TabItem Header="IfsX3d">
+                <Grid RowDefinitions="Auto, Auto">
+                    <DataGrid Grid.Row="0" CanUserReorderColumns="False" ItemsSource="{Binding IfsDatasX3d}"
+                              CanUserResizeColumns="True" CanUserSortColumns="False" AutoGenerateColumns="False" MinWidth="100">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="a" Binding="{Binding A}" Width="*"/>
+                            <DataGridTextColumn Header="b" Binding="{Binding B}" Width="*"/>
+                            <DataGridTextColumn Header="c" Binding="{Binding C}" Width="*"/>
+                            <DataGridTextColumn Header="d" Binding="{Binding D}" Width="*"/>
+                            <DataGridTextColumn Header="e" Binding="{Binding E}" Width="*"/>
+                            <DataGridTextColumn Header="f" Binding="{Binding F}" Width="*"/>
+                            <DataGridTextColumn Header="g" Binding="{Binding G}" Width="*"/>
+                            <DataGridTextColumn Header="h" Binding="{Binding H}" Width="*"/>
+                            <DataGridTextColumn Header="k" Binding="{Binding K}" Width="*"/>
+                            <DataGridTextColumn Header="ur" Binding="{Binding Ur}" Width="*"/>
+                            <DataGridTextColumn Header="vr" Binding="{Binding Vr}" Width="*"/>
+                            <DataGridTextColumn Header="rr" Binding="{Binding Rr}" Width="*"/>
+                            <DataGridTextColumn Header="p/%" Binding="{Binding P}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10">
+                        <TextBlock TextAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" ClipToBounds="False">Adjust the rows: </TextBlock>
+                        <Button Name="AddInputX3dIfsRowButton" Background="Transparent" BorderBrush="Transparent" 
+                                Click="InputX3dAddRowsClick" Content="➕">
+                            <Button.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="CornerRadius" Value="90"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <Button Name="DeleteInputX3dIfsRowButton" Background="Transparent" BorderBrush="Transparent"
+                                Click="InputX3dDeleteRowClick" Content="➖">
+                            <Button.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="CornerRadius" Value="90"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                        <Button Name="InputClearX3dRowsButton" Content="Clear" Click="InputClearX3dRowClick">
+                            <Button.Background>
+                                <SolidColorBrush Color="OrangeRed" Opacity="0.2"></SolidColorBrush>
+                            </Button.Background>
+                            <Button.Styles>
+                                <Style Selector="Button">
+                                    <Setter Property="CornerRadius" Value="90"/>
+                                </Style>
+                            </Button.Styles>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

@@ -16,7 +16,10 @@ internal class OtherObject
     internal uint FragmentShader { get; set; }
     internal uint Texture { get; set; }
     internal Matrix4x4 Mold { get; set; } = Matrix4x4.Identity;
+    internal float MoldScala { get; set; } = 1.0f;
     internal Vector3 ObjectColor { get; set; } = new(139.0f / 255.0f, 69.0f / 255.0f, 19.0f / 255.0f);
+    
+    private readonly Random _random = new();
 
     private float[] _sitPoints =
         [];
@@ -31,6 +34,7 @@ internal class OtherObject
         void main()
         {
             gl_Position = projection * view * model * vec4(aPos, 1.0);
+            gl_PointSize = 1.0;
         }
         """;
 
@@ -105,12 +109,15 @@ internal class OtherObject
             new(0.7m, 0.0m, 0.0m, 0.0m, 0.0m, 0.7m, 0.0m, 0.0m, 0.0m, 0.0m, 0.7m, 0.2m, 5)];
         // x3dIfs = TransCodeX3D.Tree1;
         // x3dIfs = TransCodeX3D.Tree2;
+        // x3dIfs = TransCodeX3D.Tree3;
         List<float> points = [];
+        const decimal zMinOffset = -0.05m;
+        const decimal zMaxOffset = 0.05m;
+        
         var (x, y, z) = (0.0m, 0.0m, 0.0m);
-        for (var i = 0; i < 50; i++)
+        for (var i = 0; i < 1e4; i++)
         {
-            var random = new Random();
-            var temp = random.Next(100);
+            var temp = _random.Next(100);
             foreach (var p in x3dIfs)
             {
                 if (temp < p.P)
@@ -118,7 +125,11 @@ internal class OtherObject
                     x = p.A * x + p.B * y + p.C * z + p.Ur;
                     y = p.D * x + p.E * y + p.F * z + p.Vr;
                     z = p.G * x + p.H * y + p.K * z + p.Rr;
-                    points = [..points, (float)x, (float)y, (float)z];
+
+                    z += (decimal)(_random.NextDouble() * (double)(zMaxOffset - zMinOffset));
+                    
+                    points.AddRange([(float)x, (float)y, (float)z]);
+                    break;
                 }
                 else
                 {
@@ -187,9 +198,9 @@ internal class OtherObject
         // _sitPoints = [.._sitPoints.Skip(150)];
         // GeneratePlantGeometry();
         Console.WriteLine($"points count: {_sitPoints.Length / 3}");
-        // Vao = gl.GenVertexArray();
+        Vao = gl.GenVertexArray();
         Vbo = gl.GenBuffer();
-        // gl.BindVertexArray(Vao);
+        gl.BindVertexArray(Vao);
         gl.BindBuffer(BufferTargetARB.ArrayBuffer, Vbo);
         fixed (float* p = _sitPoints)
         {
@@ -201,10 +212,22 @@ internal class OtherObject
         FragmentShader = gl.CreateShader(ShaderType.FragmentShader);
         gl.ShaderSource(FragmentShader, FragmentCode);
         gl.CompileShader(FragmentShader);
+        gl.GetShader(vertexShader, GLEnum.CompileStatus, out var status);
+        if (status != (int)GLEnum.True)
+        {
+            var infoLog = gl.GetShaderInfoLog(vertexShader);
+            Console.WriteLine($"other Vertex shader compile error: {infoLog}");
+        }
         Program = gl.CreateProgram();
         gl.AttachShader(Program, vertexShader);
         gl.AttachShader(Program, FragmentShader);
         gl.LinkProgram(Program);
+        gl.GetProgram(Program, GLEnum.LinkStatus, out status);
+        if (status != (int)GLEnum.True)
+        {
+            var infoLog = gl.GetProgramInfoLog(Program);
+            Console.WriteLine($"other Program link error: {infoLog}");
+        }
         gl.DetachShader(Program, vertexShader);
         gl.DetachShader(Program, FragmentShader);
         gl.DeleteShader(vertexShader);
@@ -214,8 +237,6 @@ internal class OtherObject
         gl.EnableVertexAttribArray(positionLoc);
         gl.VertexAttribPointer(positionLoc, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), (void*)0);
         
-        // LoadTexture(ref gl, texturePath);
-        
         gl.BindVertexArray(0);
         gl.BindBuffer(BufferTargetARB.ArrayBuffer, 0);
         gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, 0);
@@ -224,11 +245,10 @@ internal class OtherObject
     internal unsafe void RenderObject(ref GL gl, Matrix4x4 view, Matrix4x4 projection, Vector3? lightPos = null, Vector3? lightColor = null, Vector3? viewPos = null)
     {
         gl.UseProgram(Program);
-        // gl.BindVertexArray(Vao);
-        gl.BindBuffer(GLEnum.ArrayBuffer, Vbo);
-        gl.VertexAttribPointer(0, 3, GLEnum.Float, false, 3 * sizeof(float), (void*)0);
+        gl.BindVertexArray(Vao);
 
-        var model = Mold;
+        MoldScala = 0.5f;
+        var model = Matrix4x4.CreateScale(MoldScala) * Mold;
         var modelLoc = gl.GetUniformLocation(Program, "model");
         var viewLoc = gl.GetUniformLocation(Program, "view");
         var projectionLoc = gl.GetUniformLocation(Program, "projection");
@@ -240,7 +260,8 @@ internal class OtherObject
         var objectColorLoc = gl.GetUniformLocation(Program, "objectColor");
         gl.Uniform3(objectColorLoc, 1, (float*)&objColor);
         
-        gl.PointSize(0.5f);
-        gl.DrawArrays(PrimitiveType.TriangleStrip, 0, (uint)(_sitPoints.Length / 3));
+        gl.PointSize(1.5f);
+        gl.DrawArrays(PrimitiveType.Points, 0, (uint)(_sitPoints.Length / 3));
+        gl.BindVertexArray(0);
     }
 }

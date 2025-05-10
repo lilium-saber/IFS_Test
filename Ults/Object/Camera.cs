@@ -11,6 +11,14 @@ public class Camera
     public float Fov { get; set; } = 45.0f; // 视场角
     public float CameraSpeed { get; set; } = 60.0f;
     public float Sensitivity { get; set; } = 0.005f; // 鼠标灵敏度
-    
-    public void CameraReset() { }
+
+    public void CameraReset()
+    {
+        CameraPos = new(0.0f, 0.0f, 80.0f);
+        CameraFront = new(0.0f, 0.0f, -1.0f);
+        CameraUp = new(0.0f, 1.0f, 0.0f);
+        Fov = 45.0f;
+        CameraSpeed = 60.0f;
+        Sensitivity = 0.005f;
+    }
 }

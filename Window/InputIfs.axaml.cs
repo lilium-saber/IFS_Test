@@ -11,6 +11,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using AvaloniaApp.OpenGLUse;
 using AvaloniaApp.Ults;
+using AvaloniaApp.Ults.Object;
 using AvaloniaApp.ViewModel;
 using IFS_line.PictureSave;
 using SixLabors.ImageSharp.PixelFormats;
@@ -19,25 +20,26 @@ namespace AvaloniaApp.Window;
 
 public partial class InputIfs : Avalonia.Controls.Window
 {
-    private byte[] _imageData;
+    private byte[] _imageData = [];
     private Bitmap? _bitmap = null;
     private bool _hasImage = false;
     public ObservableCollection<IfsData> IfsDatas { get; set; } = [new IfsData()];
+    public ObservableCollection<IfsDataX3d> IfsDatasX3d { get; set; } = [new IfsDataX3d()];
     
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+    private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
 
     private void UpdateInputIfsSaveButton()
     {
         var button = this.FindControl<Button>("InputSaveImageButton");
-        var openGlButton = this.FindControl<Button>("InputImage2OpenGlButton");
-        if (button is null || openGlButton is null) return;
+        var openGlButton = this.FindControl<Button>("InputImage2OpenGlTextureButton");
+        var openGlScatters = this.FindControl<Button>("InputImage2OpenGlScattersButton");
+        if (button is null || openGlButton is null || openGlScatters is null) return;
         openGlButton.IsEnabled = _hasImage;
         button.IsEnabled = _hasImage;
+        openGlScatters.IsEnabled = _hasImage;
         button.Content = _hasImage ? "Save" : "Unused";
-        openGlButton.Content = _hasImage ? "Go To OpenGL" : "Unused";
+        openGlButton.Content = _hasImage ? "OpenGL Texture" : "Unused";
+        openGlScatters.Content = _hasImage ? "OpenGL Scatters" : "Unused";
     }
 
     private void InputIfsTurn2Tab()
@@ -48,6 +50,64 @@ public partial class InputIfs : Avalonia.Controls.Window
             tab.SelectedIndex = 0;
         }
     }
+    
+    // IfsDatasX3d X3d
+
+    private void InputIfsChangeDataGrid()
+    {
+        IfsDatasX3d.Clear();
+        foreach (var data in IfsDatas)
+        {
+            IfsDatasX3d.Add(new IfsDataX3d(data));
+        }
+    }
+
+    private void InputIfsChangeDataGrid(List<X3dIfs> list)
+    {
+        IfsDatasX3d.Clear();
+        foreach (var data in list)
+        {
+            IfsDatasX3d.Add(new IfsDataX3d(data));
+        }
+    }
+    
+    private void InputClearX3dRowClick(object sender, RoutedEventArgs e)
+    {
+        IfsDatasX3d.Clear();
+        IfsDatasX3d.Add(new());
+        
+    }
+
+    private void InputX3dAddRowsClick(object sender, RoutedEventArgs e) => IfsDatasX3d.Add(new());
+    
+    private void InputX3dDeleteRowClick(object sender, RoutedEventArgs e)
+    {
+        var index = IfsDatasX3d.Count - 1;
+        switch (IfsDatasX3d.Count)
+        {
+            case > 1:
+                IfsDatasX3d.RemoveAt(index);
+                return;
+            case 1:
+                IfsDatasX3d.RemoveAt(index);
+                IfsDatasX3d.Add(new());
+                return;
+        }
+    }
+    
+    private void InputX3dUseIfsClick(object sender, RoutedEventArgs e)
+    {
+        if(IfsDatasX3d.Sum(_ => _.P) != 100.0m)
+        {
+            var warning = new Warning("Please add all the probability to 100%");
+            warning.ShowDialog(this).ConfigureAwait(true);
+            return;
+        }
+
+        var list = IfsDatasX3d.Select(OpenGlUlts.IfsDataX3d2X3dIfs).ToList();
+    }
+    
+    // IfsDatas X2d
 
     private void InputIfsChangeDataGrid(List<(decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal p)> list)
     {
@@ -173,17 +233,24 @@ public partial class InputIfs : Avalonia.Controls.Window
         var openGl = new SILKOpenGLOnly(pictures);
         openGl.PubStartOpenGl();
     }
-    
-    private void InputAddRowClick(object sender, RoutedEventArgs e)
+
+    private void InputImage2OpenGlScattersClick(object sender, RoutedEventArgs e)
     {
-        // Console.WriteLine($"InputAddRowClick{IfsDatas?.Count}");
-        IfsDatas!.Add(new());
+        var openGl = new OpenGlScatter([..IfsDatas.Select(_ => (_.a, _.b, _.c, _.d, _.e, _.f, _.p))], [..IfsDatas.Select(_ => GetColorType(_.SelectedColor))]);
+        var success = openGl.PubStartOpenGl();
+        if (!success)
+        {
+            var warning = new Warning("OpenGL failed to start");
+            warning.ShowDialog(this).ConfigureAwait(true);
+        }
     }
+    
+    private void InputAddRowClick(object sender, RoutedEventArgs e) => IfsDatas.Add(new());
     
     private void InputClearRowClick(object sender, RoutedEventArgs e)
     {
         // Console.WriteLine($"InputClearRowClick{IfsDatas?.Count}");
-        IfsDatas!.Clear();
+        IfsDatas.Clear();
         IfsDatas.Add(new());
         _bitmap = null;
         _imageData = [];
@@ -195,12 +262,15 @@ public partial class InputIfs : Avalonia.Controls.Window
     
     private void InputDeleteRowClick(object sender, RoutedEventArgs e)
     {
-        if(IfsDatas.Count > 1)
-            IfsDatas.RemoveAt(IfsDatas.Count - 1);
-        if (IfsDatas.Count == 1)
+        switch (IfsDatas.Count)
         {
-            IfsDatas.RemoveAt(IfsDatas.Count - 1);
-            IfsDatas.Add(new());
+            case > 1:
+                IfsDatas.RemoveAt(IfsDatas.Count - 1);
+                return;
+            case 1:
+                IfsDatas.RemoveAt(IfsDatas.Count - 1);
+                IfsDatas.Add(new());
+                return;
         }
         // Console.WriteLine($"InputDeleteRowClick{IfsDatas?.Count}");
     }
@@ -224,10 +294,8 @@ public partial class InputIfs : Avalonia.Controls.Window
     
     public InputIfs()
     {
-        _imageData = [];
         DataContext = this;
         InitializeComponent();
         UpdateInputIfsSaveButton();
-
     }
 }

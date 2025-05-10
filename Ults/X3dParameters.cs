@@ -40,28 +40,4 @@ public struct X3dIfs(
     public decimal Vr { get; set; } = vr;
     public decimal Rr { get; set; } = rr;
     public decimal P { get; set; } = p;
-
-    public void Tuple2X3dIfs((decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal g, decimal h,
-        decimal k, decimal ur, decimal vr, decimal rr, decimal p) tuple)
-    {
-        A = tuple.a;
-        B = tuple.b;
-        C = tuple.c;
-        D = tuple.d;
-        E = tuple.e;
-        F = tuple.f;
-        G = tuple.g;
-        H = tuple.h;
-        K = tuple.k;
-        Ur = tuple.ur;
-        Vr = tuple.vr;
-        Rr = tuple.rr;
-        P = tuple.p;
-    }
-    
-    public (decimal a, decimal b, decimal c, decimal d, decimal e, decimal f, decimal g, decimal h,
-        decimal k, decimal ur, decimal vr, decimal rr, decimal p) X3dIfs2Tuple()
-    {
-        return (A, B, C, D, E, F, G, H, K, Ur, Vr, Rr, P);
-    }
 }

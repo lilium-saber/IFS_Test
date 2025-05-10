@@ -9,20 +9,11 @@ public partial class Warning : Avalonia.Controls.Window
 {
     public string WarningMessage { get; set; } = "Warning";
     
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
+    private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
     
-    private void WarningCloseClick(object sender, RoutedEventArgs e)
-    {
-        this.Close();
-    }
+    private void WarningCloseClick(object sender, RoutedEventArgs e) => Close();
     
-    public Warning()
-    {
-        InitializeComponent();
-    }
+    public Warning() => InitializeComponent();
 
     public Warning(string warningMessage)
     {

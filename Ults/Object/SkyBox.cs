@@ -14,7 +14,6 @@ internal class SkyBox
     private uint _skyboxTexture;
     private uint _skyboxProgram;
     private uint _skyboxShader;
-    internal Matrix4x4 Mold { get; set; } = Matrix4x4.Identity;
 
     private readonly float[] _skyboxVertices =
         [
@@ -183,10 +182,16 @@ internal class SkyBox
         gl.UseProgram(_skyboxProgram);
         gl.BindVertexArray(_skyboxVao);
         
-        var viewNoTranslation = new Matrix4x4(view.M11, view.M12, view.M13, 0,
-            view.M21, view.M22, view.M23, 0,
-            view.M31, view.M32, view.M33, 0,
-            0, 0, 0, 1);
+        var viewNoTranslation = view with
+        {
+            M14 = 0,
+            M24 = 0,
+            M34 = 0,
+            M41 = 0,
+            M42 = 0,
+            M43 = 0,
+            M44 = 1
+        };
         var viewLoc = gl.GetUniformLocation(_skyboxProgram, "view");
         var projectionLoc = gl.GetUniformLocation(_skyboxProgram, "projection");
         gl.UniformMatrix4(viewLoc, 1, false, (float*)&viewNoTranslation);

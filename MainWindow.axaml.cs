@@ -20,10 +20,7 @@ namespace AvaloniaApp;
 [SuppressMessage("Performance", "CA1859:尽可能使用具体类型以提高性能")]
 public partial class MainWindow : Avalonia.Controls.Window
 {
-    public MainWindow()
-    {
-        InitializeComponent();
-    }
+    public MainWindow() => InitializeComponent();
 
     private async void OpenShowWindowClick(object sender, RoutedEventArgs e)
     {
